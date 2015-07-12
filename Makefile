@@ -1,13 +1,13 @@
-CC = gcc
-CFLAGS = -pedantic
+CC = clang
+CFLAGS = -Wall -Wextra -pedantic
 
-TARGETS = termplot.o ui_curses.o options.o
+TARGETS = termplot.o input.o ui_curses.o options.o
 
-%.o: %.c
-	gcc $(CFLAGS) -c -o $@ $<
+%.o: src/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 all: $(TARGETS)
-	gcc -lncurses $(TARGETS) -o termplot
+	$(CC) -lm -lncurses $(TARGETS) -o termplot
 
 
 clean:
