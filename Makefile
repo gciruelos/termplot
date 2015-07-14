@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -pedantic
+CC = clang
+CFLAGS = -fmax-errors=5 -Wall -pedantic
 
 TARGETS = termplot.o input.o ui_curses.o plot.o parser.o options.o
 

@@ -8,14 +8,15 @@ double eval_add(double a1, double a2){return a1+a2;}
 double eval_sub(double a1, double a2){return a1-a2;}
 double eval_mul(double a1, double a2){return a1*a2;}
 double eval_div(double a1, double a2){return a1/a2;}
+double eval_mod(double a1, double a2){return fmod(a1,a2);}
 
 
 struct op_s ops[OPS_SIZE]={
   {'_', 10, ASSOC_RIGHT, 1, eval_neg},
-  {'^', 9, ASSOC_RIGHT, 0, NULL},
+  {'^', 9, ASSOC_RIGHT, 0, pow},
   {'*', 8, ASSOC_LEFT, 0, eval_mul},
   {'/', 8, ASSOC_LEFT, 0, eval_div},
-  {'%', 8, ASSOC_LEFT, 0, NULL},
+  {'%', 8, ASSOC_LEFT, 0, eval_mod},
   {'+', 5, ASSOC_LEFT, 0, eval_add},
   {'-', 5, ASSOC_LEFT, 0, eval_sub},
 };
@@ -40,6 +41,8 @@ unsigned int next_token(const char *expr, token * res){
     case '-': 
     case '*': 
     case '/': 
+    case '^': 
+    case '%': 
               res->type = OP; assign(&(res->data.op), *expr); i++; break;
     case '(': res->type = PARL; i++; break;
     case ')': res->type = PARR; i++; break;
@@ -49,7 +52,7 @@ unsigned int next_token(const char *expr, token * res){
               res->data.i = 0;
               while(isdigit(expr[i])){
                 res->data.i *= 10;
-                res->data.i += (int) (expr[i]) - (int) '0';
+                res->data.i += (int) ((expr[i]) - '0');
 
                 i++;
               } 
@@ -68,7 +71,6 @@ void prnt_token(token tok){
   }else{
     printf("{WHAT %d}", tok.type);
   }
-  //printf("\n");
 }
 
 
@@ -82,7 +84,8 @@ void print_caca(token ** s, int sz){
 
 expr parse(const char * in){ 
 
-  token ** queue = (token **) malloc(sizeof(token)*100); int queue_last = -1;
+  char * eq = malloc(sizeof(char)*100); int next = 0;
+  token ** queue = malloc(sizeof(token*)*100); int queue_last = -1;
   token * stack[100]; int stack_top = -1;
 
 
@@ -91,13 +94,11 @@ expr parse(const char * in){
   int forward;
 
   while(*in != '\0'){
-
-   
+    eq[next++] = *in;
     token * tok = malloc(sizeof(token));
   
     forward = next_token(in, tok);
     in += forward;
-
 
     //chequear si es - unario o binario 
     if(tok->type == OP && tok->data.op.op == '-'){
@@ -140,9 +141,12 @@ expr parse(const char * in){
     queue[++queue_last] = stack[stack_top--];
   }
 
+  eq[next] = '\0';
+
  expr res;
  res.parsed = queue;
  res.size = queue_last+1;
+ res.str = eq;
  return res;
 
 
@@ -178,19 +182,24 @@ double eval(expr e, double x){
 }
 
 void delete_expr(expr d){
-  int i;
-  for(i = 0; i<d.size; i++){
-    free(d.parsed[i]);
+  if(d.parsed){
+    int i;
+    for(i = 0; i<d.size; i++){
+      free(d.parsed[i]);
+    }
+    free(d.parsed);
   }
-  free(d.parsed);
+  if(d.str){
+    free(d.str);
+  }
 }
 /*
 int main(){
-  char e[] = "x*x";
+  char e[] = "x^2";
   expr a = parse(e);
   print_caca(a.parsed, a.size);
   printf("%f\n", eval(a, 1.2));
-  return 0;
   delete_expr(a);
+  return 0;
 }
 */

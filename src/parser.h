@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #define OPS_SIZE 9
 
 
@@ -42,8 +43,11 @@ typedef struct tok_t{
 typedef struct expr_t{
   token ** parsed;
   unsigned int size;
+  char * str;
 } expr;
 
 expr parse(const char * in);
 double eval(expr e, double x);
+void delete_expr(expr d);
+
 #endif

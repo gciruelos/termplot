@@ -15,7 +15,6 @@
  *
  */
 
-
 void end_curses() {
   if (curses_started && !isendwin())
     delwin(win);
