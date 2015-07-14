@@ -5,6 +5,7 @@
 #include "ui_curses.h"
 #include "options.h"
 #include "input.h"
+#include "plot.h"
 
 double square(double x){ return x*x;}
 
@@ -22,7 +23,8 @@ int main(int argc, char* argv[]){
     
     draw_axis(col, row-1);
 
-    plot_function(log, col, row-1);
+    //plot_function(log, col, row-1);
+    replot_functions(col, row-1);
 
     x = input_action(row);
     if(x == -1) break;

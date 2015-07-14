@@ -1,5 +1,25 @@
 #include "parser.h"
 
+
+
+
+double eval_neg(double a){return -a;}
+double eval_add(double a1, double a2){return a1+a2;}
+double eval_sub(double a1, double a2){return a1-a2;}
+double eval_mul(double a1, double a2){return a1*a2;}
+double eval_div(double a1, double a2){return a1/a2;}
+
+
+struct op_s ops[OPS_SIZE]={
+  {'_', 10, ASSOC_RIGHT, 1, eval_neg},
+  {'^', 9, ASSOC_RIGHT, 0, NULL},
+  {'*', 8, ASSOC_LEFT, 0, eval_mul},
+  {'/', 8, ASSOC_LEFT, 0, eval_div},
+  {'%', 8, ASSOC_LEFT, 0, NULL},
+  {'+', 5, ASSOC_LEFT, 0, eval_add},
+  {'-', 5, ASSOC_LEFT, 0, eval_sub},
+};
+
 void assign(struct op_s * op, char opch){
   int i;
   for(i = 0; i<OPS_SIZE; i++){
@@ -15,7 +35,7 @@ unsigned int next_token(const char *expr, token * res){
 
   unsigned int i = 0;
   switch(*expr){
-    case '\0': res->type = ERR; break;
+    case '\0': res->type = _ERR; break;
     case '+': 
     case '-': 
     case '*': 

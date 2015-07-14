@@ -1,3 +1,6 @@
+#ifndef PARSER
+#define PARSER
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -5,14 +8,6 @@
 
 
 enum {ASSOC_NONE=0, ASSOC_LEFT, ASSOC_RIGHT};
-
-
-double eval_neg(double a){return -a;}
-double eval_add(double a1, double a2){return a1+a2;}
-double eval_sub(double a1, double a2){return a1-a2;}
-double eval_mul(double a1, double a2){return a1*a2;}
-double eval_div(double a1, double a2){return a1/a2;}
-
 
 
 struct op_s {
@@ -24,14 +19,6 @@ struct op_s {
     double (*bin)(double a1, double a2);
     double (*un)(double a);
   } function;
-  } ops[OPS_SIZE]={
-  {'_', 10, ASSOC_RIGHT, 1, eval_neg},
-  {'^', 9, ASSOC_RIGHT, 0, NULL},
-  {'*', 8, ASSOC_LEFT, 0, eval_mul},
-  {'/', 8, ASSOC_LEFT, 0, eval_div},
-  {'%', 8, ASSOC_LEFT, 0, NULL},
-  {'+', 5, ASSOC_LEFT, 0, eval_add},
-  {'-', 5, ASSOC_LEFT, 0, eval_sub},
 };
 
 enum token_t{
@@ -40,7 +27,7 @@ enum token_t{
   OP,
   PARL,
   PARR,
-  ERR
+  _ERR
 };
 
 typedef struct tok_t{
@@ -57,3 +44,6 @@ typedef struct expr_t{
   unsigned int size;
 } expr;
 
+expr parse(const char * in);
+double eval(expr e, double x);
+#endif

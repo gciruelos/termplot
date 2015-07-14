@@ -16,7 +16,6 @@
  */
 
 
-
 void end_curses() {
   if (curses_started && !isendwin())
     delwin(win);
@@ -39,38 +38,6 @@ void start_curses() {
     curses_started = true;
     }
 }
-
-void plot_function(double (*f)(double), int width, int height){
-  
-  static double epsilon = 0.001;
-  static double threshold = 4.0; // derivative threshold, "4 is big"
-
-  int x, y;
-  double x_, y_;
-  double dx_;
-
-  double dx_zoom = options.y_zoom/options.x_zoom;
-
-  for(x = 0; x<width; x++){
-    x_ = options.x_center + options.x_zoom * (x - width/2);
-    y_ = f(x_);
-
-    y = height/2 + (options.y_center - y_)/options.y_zoom;
-
-    dx_ = (f(x_+epsilon)-f(x_))/epsilon;
-
-    if(dx_ < dx_zoom/threshold &&  dx_ > -dx_zoom/threshold ){
-      mvprintw(y+1, x, "_");
-    } else if(dx_ > dx_zoom/threshold && dx_ < dx_zoom*threshold){
-      mvprintw(y, x, "/");
-    } else if(dx_ < -dx_zoom/threshold && dx_ > -dx_zoom*threshold){
-      mvprintw(y, x, "\\");
-    } else{
-      mvprintw(y, x, "|");
-    }
-  }
-}
-
 
 void draw_axis(int width, int height){
   int y, x;
