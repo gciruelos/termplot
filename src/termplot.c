@@ -26,8 +26,6 @@ int main(int argc, char* argv[]){
 
     x = input_action(row);
     if(x == -1) break;
-
-    move(0,0);
     
     refresh();
   } 
