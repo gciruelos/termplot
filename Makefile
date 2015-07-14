@@ -1,4 +1,4 @@
-CC = clang
+CC = gcc
 CFLAGS = -Wall -Wextra -pedantic
 
 TARGETS = termplot.o input.o ui_curses.o plot.o parser.o options.o
