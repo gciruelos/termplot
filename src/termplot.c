@@ -1,9 +1,11 @@
+#include <stdio.h>
 #include "ui_curses.h"
 #include "options.h"
 #include "plot.h"
 
 int main(int argc, char* argv[]){
   start_curses();
+  init_ui();
   init_structs();
   init_plotter();
   
@@ -22,6 +24,9 @@ int main(int argc, char* argv[]){
     refresh();
   } 
 
-  end_curses();
   clean_plotter();
+  clean_ui();
+  end_curses(); 
+
+  return 0;
 }

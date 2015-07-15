@@ -15,78 +15,72 @@
  *
  */
 
+#define BUFFER_SIZE 500
+#define MAX_LEN 300
+struct buffer_entry{
+  char * buf;
+  int x;
+  int y;
+  unsigned int color;
+} * print_buffer[BUFFER_SIZE];
+int buffer_next;
+
 
 void set_terminal_size(){
   getmaxyx(stdscr,options.height,options.width);
 }
-    
 
-void wshowchc(int y, int x, int color, char ch){
-  attron(COLOR_PAIR(color)); 
-  mvaddch(y, x, ch);
-  attroff(COLOR_PAIR(color));
+
+void wprintf(int y, int x, unsigned int color, char * fmt, ...){
+  struct buffer_entry * b = print_buffer[buffer_next++];
+  
+  va_list args;
+  va_start(args, fmt);
+  vsprintf(b->buf, fmt, args);
+  va_end(args);
+
+  b->y = y;
+  b->x = x;
+  b->color = color;
 }
 
 
-void show_function_list(int index, int color, char * str){
-  mvprintw(1+index, 0, "%d", index); 
-  attron(COLOR_PAIR(color));
-  mvprintw(1+index, 2,"f(x) = %s", str); 
-  attroff(COLOR_PAIR(color));
+void update_ui(){
+  int i;
+  struct buffer_entry * b; 
+  for(i = 0; i < buffer_next; i++){
+    b = print_buffer[i];
+    attron(COLOR_PAIR(b->color));
+    mvaddstr(b->y, b->x, b->buf);
+    attroff(COLOR_PAIR(b->color));
+  } 
+  buffer_next = 0;
+  //refresh();
 }
 
-void end_curses() {
-  if (curses_started && !isendwin())
-    delwin(win);
-    endwin();
-    refresh();
-}
 
-void start_curses() {
-  if (curses_started) {
-    refresh();
-  }
-  else {  
-    win = initscr();
-    start_color(); 
-    cbreak();
-    noecho();
-    intrflush(stdscr, false);
-    keypad(stdscr, true);
-    atexit(end_curses);
-    curses_started = true;
-    }
-
-
-  int i, j;
-  for(i = 0; i<16; i++){
-     for(j = 0; j<16; j++){
-       init_pair(j*16 + i, i, j); // bg*16 + fg
-     }
-  }
-}
 
 void input_command(){
   int ch;
   int i = 0;
   int height = options.height;
-  mvprintw(height-1, 0, ":");
-
+  wprintf(height-1, 0, BW, ":");
+  update_ui();
   char command[500]; 
 
   while((ch = getch()) != 10){
     if(ch == 127){
       i--;
-      mvprintw(height-1, i+1, " ");
-      mvprintw(height-1, i+1, "");
+      wprintf(height-1, i+1, BW, " ");
+      wprintf(height-1, i+1, BW, "");
     } else{
-      mvprintw(height-1, i+1, "%c", ch);
+      wprintf(height-1, i+1, BW, "%c", ch);
       command[i] = ch;
       i++;
     }
+    update_ui();
   }
   command[i] = '\0';
-  fprintf(stderr, "hola");
   run_command(command);
 }
 
@@ -130,32 +124,57 @@ int input(){
 
 
 
-void draw_axis(){
 
-  int height = options.height;
-  int width = options.width;
-
-  int y, x;
-  int x_0 = width/2  - options.x_center/options.x_zoom;
-  int y_0 = height/2 + options.y_center/options.y_zoom;
-  
-  for(y = 0; y<height; y++){
-    mvprintw(y, x_0, "|");
-  }
-   
-  for(x = 0; x<width; x++){
-   mvprintw(y_0, x, "-");
-  }
-  //mvprintw(y_0, x_0, "+");
-
-  for(x = 0; x<width; x+=10){ 
-   mvprintw(y_0+1, x, "%.3f", options.x_center + options.x_zoom * (x - width/2));
+void init_ui(){
+  int i, j;
+  for(i = 0; i<16; i++){
+     for(j = 0; j<16; j++){
+       init_pair(j*16 + i, i, j); // bg*16 + fg
+     }
   }
 
-  for(y = 0; y<height; y+=3){ 
-   mvprintw(y, x_0+1, " %.3f", options.y_center + options.y_zoom * (height/2-y));
+  for(i = 0; i<BUFFER_SIZE; i++){
+    print_buffer[i] = malloc(sizeof(struct buffer_entry)); 
+    print_buffer[i]->buf = calloc(MAX_LEN, sizeof(char));
   }
 
+  buffer_next = 0;
+}
+
+void clean_ui(){
+  int i;
+
+  for(i = 0; i<BUFFER_SIZE; i++){
+    free(print_buffer[i]->buf);
+    print_buffer[i]->buf = NULL;
+    free(print_buffer[i]);
+    print_buffer[i] = NULL;
+  }
 }
 
 
+
+void end_curses() {
+  if (curses_started && !isendwin()){
+    delwin(win);
+    endwin();
+    refresh();
+  }
+}
+
+void start_curses() {
+  if (curses_started) {
+    refresh();
+  }
+  else {  
+    win = initscr();
+    start_color(); 
+    cbreak();
+    noecho();
+    intrflush(stdscr, false);
+    keypad(stdscr, true);
+    atexit(end_curses);
+    curses_started = true;
+    }
+
+}

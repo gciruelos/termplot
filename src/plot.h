@@ -5,7 +5,6 @@
 #include "parser.h"
 #include "ui_curses.h"
 
-#include <unistd.h>
 #include <stdio.h>
 
 #define MAX_FUNCTIONS 32
@@ -20,6 +19,7 @@ void replot_functions();
 void plot_function(expr e, int index);
 void add_function(char * cmd);
 
+void draw_axis();
 
 void init_plotter();
 void clean_plotter();

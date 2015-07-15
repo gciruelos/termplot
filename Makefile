@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -Wextra -Wmost -pedantic
+CFLAGS = -g -pedantic
 
 TARGETS = termplot.o command.o ui_curses.o plot.o parser.o options.o
 

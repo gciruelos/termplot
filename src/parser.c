@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "parser.h"
 
 
@@ -165,6 +166,7 @@ void delete_expr(expr d){
   if(d.parsed){
     unsigned int i;
     for(i = 0; i<d.size; i++){
+      printf("\tfreeing token %d\n", i);
       free(d.parsed[i]);
     }
     free(d.parsed);
