@@ -176,5 +176,4 @@ void start_curses() {
     atexit(end_curses);
     curses_started = true;
     }
-
 }

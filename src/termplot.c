@@ -2,12 +2,15 @@
 #include "ui_curses.h"
 #include "options.h"
 #include "plot.h"
+#include "debug.h"
 
 int main(int argc, char* argv[]){
   start_curses();
   init_ui();
   init_structs();
   init_plotter();
+
+  start_debug();
   
   int x;
   while (true) {
