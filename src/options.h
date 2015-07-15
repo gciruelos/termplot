@@ -6,6 +6,9 @@ struct{
   double y_center;
   double x_zoom;
   double y_zoom;
+
+  int width;
+  int height;
 } options;
 
 void init_structs();

@@ -1,12 +1,5 @@
 #include "plot.h"
 
-
-
-
-
-
-
-
 void add_function(char * cmd){
   struct function new;
   new.f = parse(cmd);
@@ -24,25 +17,30 @@ void add_function(char * cmd){
 
 
 
-void replot_functions(int width, int height){
-
+void replot_functions(){
   int i;
   for(i = 0; i<MAX_FUNCTIONS; i++){
     if(functions[i].valid)
-      plot_function(functions[i].f, i, width, height);
+      plot_function(functions[i].f, i);
   }
 }
 
-void plot_function(expr e, int index, int width, int height){
-  attron(COLOR_PAIR(index%8+1));
+void plot_function(expr e, int index){
   static double epsilon = 0.001;
   static double threshold = 4.0; // derivative threshold, "4 is big"
+
+
+  int height = options.height;
+  int width = options.width;
 
   int x, y;
   double x_, y_;
   double dx_;
 
   double dx_zoom = options.y_zoom/options.x_zoom;
+
+
+  int color = index%16 + 1;
 
   for(x = 0; x<width; x++){
     x_ = options.x_center + options.x_zoom * (x - width/2);
@@ -53,24 +51,18 @@ void plot_function(expr e, int index, int width, int height){
     dx_ = (eval(e, x_+epsilon)-eval(e, x_))/epsilon;
 
     if(dx_ < dx_zoom/threshold &&  dx_ > -dx_zoom/threshold ){
-      mvprintw(y+1, x, "_");
+      wshowchc(y+1, x, color, '_');
     } else if(dx_ > dx_zoom/threshold && dx_ < dx_zoom*threshold){
-      mvprintw(y, x, "/");
+      wshowchc(y, x, color, '/');
     } else if(dx_ < -dx_zoom/threshold && dx_ > -dx_zoom*threshold){
-      mvprintw(y, x, "\\");
+      wshowchc(y, x, color, '\\');
     } else{
-      mvprintw(y, x, "|");
+      wshowchc(y, x, color, '|');
     }
   }
 
 
-  attroff(COLOR_PAIR(index%8+1));
-  mvprintw(1+index, 0, "%d", index); 
-  attron(COLOR_PAIR(index%8+1));
-  mvprintw(1+index, 2,"f(x) = %s", e.str); 
-
-
-  attroff(COLOR_PAIR(index%8+1));
+  show_function_list(index, color, e.str);
 }
 
 void delete_function(unsigned int i){
@@ -86,11 +78,7 @@ void init_plotter(){
   unsigned int i;
   for(i = 0; i<MAX_FUNCTIONS; i++){
     functions[i].valid = 0;
-  
-    init_pair(i, i%8, COLOR_BLACK); 
   }
-
-
 }
 
 void clean_plotter(){

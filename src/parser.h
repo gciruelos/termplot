@@ -12,14 +12,14 @@ enum {ASSOC_NONE=0, ASSOC_LEFT, ASSOC_RIGHT};
 
 
 struct op_s {
-  char op;
-  int prec;
-  int assoc;
-  int unary;
   union{
     double (*bin)(double a1, double a2);
     double (*un)(double a);
   } function;
+  int prec;
+  int assoc;
+  int unary;
+  char op;
 };
 
 enum token_t{

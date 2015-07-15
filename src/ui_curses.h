@@ -3,15 +3,7 @@
 
 
 #include "options.h"
-#include "parser.h"
-
-typedef struct plot_t{
-  double (*f)(double);
-  bool valid;
-} plot;
-
-plot plots[32]; 
-
+#include "command.h"
 
 WINDOW * win;
 bool curses_started;
@@ -20,5 +12,16 @@ void end_curses();
 void start_curses();
 
 
-void draw_axis(int width, int height);
+
+int input();
+void input_command();
+
+void draw_axis();
+
+
+void set_terminal_size();
+
+//show char with color
+void wshowchc(int y, int x, int color, char ch);
+void show_function_list(int index, int color, char * str); 
 

@@ -3,22 +3,22 @@
 
 
 
-double eval_neg(double a){return -a;}
-double eval_add(double a1, double a2){return a1+a2;}
-double eval_sub(double a1, double a2){return a1-a2;}
-double eval_mul(double a1, double a2){return a1*a2;}
-double eval_div(double a1, double a2){return a1/a2;}
-double eval_mod(double a1, double a2){return fmod(a1,a2);}
+double _neg(double a){return -a;}
+double _add(double a1, double a2){return a1+a2;}
+double _sub(double a1, double a2){return a1-a2;}
+double _mul(double a1, double a2){return a1*a2;}
+double _div(double a1, double a2){return a1/a2;}
+double _mod(double a1, double a2){return fmod(a1,a2);}
 
 
 struct op_s ops[OPS_SIZE]={
-  {'_', 10, ASSOC_RIGHT, 1, eval_neg},
-  {'^', 9, ASSOC_RIGHT, 0, pow},
-  {'*', 8, ASSOC_LEFT, 0, eval_mul},
-  {'/', 8, ASSOC_LEFT, 0, eval_div},
-  {'%', 8, ASSOC_LEFT, 0, eval_mod},
-  {'+', 5, ASSOC_LEFT, 0, eval_add},
-  {'-', 5, ASSOC_LEFT, 0, eval_sub},
+  {_neg, 10, ASSOC_RIGHT, 1, '_'},
+  {pow, 9, ASSOC_RIGHT, 0, '^'},
+  {_mul, 8, ASSOC_LEFT, 0, '*'},
+  {_div, 8, ASSOC_LEFT, 0, '/'},
+  {_mod, 8, ASSOC_LEFT, 0, '%'},
+  {_add, 5, ASSOC_LEFT, 0, '+'},
+  {_sub, 5, ASSOC_LEFT, 0, '-'},
 };
 
 void assign(struct op_s * op, char opch){
@@ -61,26 +61,6 @@ unsigned int next_token(const char *expr, token * res){
   return i;
 }
 
-void prnt_token(token tok){
-  if(tok.type == NUM){
-    printf("{NUM %d}", tok.data.i);
-  } else if(tok.type == OP){
-    printf("{OP %c}", tok.data.op.op);
-  } else if(tok.type == VAR){
-    printf("{VAR X}");
-  }else{
-    printf("{WHAT %d}", tok.type);
-  }
-}
-
-
-void print_caca(token ** s, int sz){
- int j;
- for(j = 0; j<sz; j++){
-   printf("#");prnt_token(*s[j]);
- }
- printf("\n");
-}
 
 expr parse(const char * in){ 
 
@@ -155,7 +135,7 @@ expr parse(const char * in){
 double eval(expr e, double x){
   double stack[100]; int stack_top = -1;
 
-  int i;
+  unsigned int i;
   for(i = 0; i<e.size; i++){
     token * t = e.parsed[i];
     if (t->type == NUM){
@@ -183,7 +163,7 @@ double eval(expr e, double x){
 
 void delete_expr(expr d){
   if(d.parsed){
-    int i;
+    unsigned int i;
     for(i = 0; i<d.size; i++){
       free(d.parsed[i]);
     }
@@ -194,6 +174,29 @@ void delete_expr(expr d){
   }
 }
 /*
+
+
+void prnt_token(token tok){
+  if(tok.type == NUM){
+    printf("{NUM %d}", tok.data.i);
+  } else if(tok.type == OP){
+    printf("{OP %c}", tok.data.op.op);
+  } else if(tok.type == VAR){
+    printf("{VAR X}");
+  }else{
+    printf("{WHAT %d}", tok.type);
+  }
+}
+
+
+void print_caca(token ** s, int sz){
+ int j;
+ for(j = 0; j<sz; j++){
+   printf("#");prnt_token(*s[j]);
+ }
+ printf("\n");
+}
+
 int main(){
   char e[] = "x^2";
   expr a = parse(e);

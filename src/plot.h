@@ -3,9 +3,9 @@
 
 #include "options.h"
 #include "parser.h"
+#include "ui_curses.h"
 
 #include <unistd.h>
-#include <ncurses.h>
 #include <stdio.h>
 
 #define MAX_FUNCTIONS 32
@@ -16,9 +16,13 @@ struct function{
 } functions[MAX_FUNCTIONS];
 
 
-
-
-void replot_functions(int width, int height);
-void plot_function(expr e, int index, int width, int height);
+void replot_functions();
+void plot_function(expr e, int index);
 void add_function(char * cmd);
+
+
+void init_plotter();
+void clean_plotter();
+
+
 #endif
