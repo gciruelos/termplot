@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include "ui_curses.h"
+#include "ui.h"
 #include "options.h"
 #include "plot.h"
 #include "debug.h"
 
 int main(int argc, char* argv[]){
-  start_curses();
   init_ui();
   init_structs();
   init_plotter();
@@ -13,7 +12,7 @@ int main(int argc, char* argv[]){
   start_debug();
   
   int x;
-  while (true) {
+  while (1) {
     clear();
 
     set_terminal_size();
@@ -29,7 +28,5 @@ int main(int argc, char* argv[]){
 
   clean_plotter();
   clean_ui();
-  end_curses(); 
-
   return 0;
 }

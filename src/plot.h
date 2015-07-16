@@ -3,7 +3,7 @@
 
 #include "options.h"
 #include "parser.h"
-#include "ui_curses.h"
+#include "ui.h"
 
 #include <stdio.h>
 

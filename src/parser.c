@@ -195,8 +195,7 @@ double eval(const expr e, double x){
     } else if(t->type == VAR){
       stack[++stack_top] = x;
     } else if(t->type == OP){
-      struct op_s o = t->data.op;
-      d_print("%c\n", o.op);
+      struct op_s o = t->data.op; 
       if(o.unary){
         double a = stack[stack_top];
 

@@ -1,7 +1,7 @@
 CC = clang
-CFLAGS = -g -pedantic
+CFLAGS = -Wextra -Wall -g -pedantic
 
-TARGETS = termplot.o command.o ui_curses.o plot.o parser.o options.o debug.o
+TARGETS = termplot.o options.o ui.o command.o plot.o parser.o debug.o
 
 %.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
