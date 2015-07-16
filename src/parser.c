@@ -35,31 +35,52 @@ void assign(struct op_s * op, char opch){
 
 unsigned int next_token(const char *expr, token * res){
 
-  unsigned int i = 0;
-  switch(*expr){
-    case '\0': res->type = _ERR; break;
-    case '+': 
-    case '-': 
-    case '*': 
-    case '/': 
-    case '^': 
-    case '%': 
-              res->type = OP; assign(&(res->data.op), *expr); i++; break;
-    case '(': res->type = PARL; i++; break;
-    case ')': res->type = PARR; i++; break;
-    case 'x': res->type = VAR; i++; break;
-    default: 
-              res->type = NUM;
-              res->data.i = 0;
-              while(isdigit(expr[i])){
-                res->data.i *= 10;
-                res->data.i += (int) ((expr[i]) - '0');
+  unsigned int idx = 0, i;
 
-                i++;
-              } 
-              break;
+
+  //look for operators
+  for(i = 0; i<OPS_SIZE; i++){
+    if (*expr == ops[i].op){
+      res->type = OP;
+      assign(&(res->data.op), *expr);
+      idx++;
+      return idx;
+    }
   }
-  return i;
+
+
+  if(isdigit(expr[idx])){
+    res->type = NUM;
+    res->data.n = 0;
+    while(isdigit(expr[idx])){
+      res->data.n *= 10;
+      res->data.n += (int) (expr[idx] - '0');
+      idx++;
+    }
+
+    if(expr[idx] == '.'){
+      idx++;
+      double d = 10.0;
+      while(isdigit(expr[idx])){
+          res->data.n += ((int) (expr[idx]-'0')) / d;
+          d *= 10.0;
+          idx++;
+      }
+    }
+
+
+
+    return idx;
+  }
+
+
+  switch(*expr){ 
+    case '(': res->type = PARL; idx++; break;
+    case ')': res->type = PARR; idx++; break;
+    case 'x': res->type = VAR; idx++; break;
+    default: res->type = _ERR; idx++; break;
+  }
+  return idx;
 }
 
 
@@ -69,52 +90,78 @@ expr parse(const char * in){
   token ** queue = malloc(sizeof(token*)*100); int queue_last = -1;
   token * stack[100]; int stack_top = -1;
 
+  int parse_error = 0;
+
 
   token * last_tok = NULL;
 
-  int forward;
+  unsigned int forward = 0;
 
-  while(*in != '\0'){
-    eq[next++] = *in;
+  struct op_s o1, o2;
+
+
+
+  while(*in != '\0'){ 
     token * tok = malloc(sizeof(token));
   
     forward = next_token(in, tok);
-    in += forward;
 
-    //chequear si es - unario o binario 
+    while(forward){
+      eq[next++] = *(in++);
+      forward--;
+    }
+    
+    
+    //check if - is unary or binary
     if(tok->type == OP && tok->data.op.op == '-'){
       if(last_tok == NULL || last_tok->type == PARL || last_tok->type == OP){
         assign(&(tok->data.op), '_');
       }
     }
     
-    if(tok->type == NUM || tok->type == VAR){
-      queue[++queue_last] = tok;
-    } else if(0){ //function token
-    } else if(0){ //function argument separator
-    } else if(tok->type == OP){
-      struct op_s o1 = tok->data.op;
-    
-      while(stack_top >= 0 && stack[stack_top]->type == OP){
-        struct op_s o2 = stack[stack_top]->data.op;
-        if((o1.assoc == ASSOC_LEFT && o1.prec <= o2.prec) ||
-           (o1.assoc == ASSOC_RIGHT && o1.prec < o2.prec)){
-          queue[++queue_last] = stack[stack_top--];
-        } else break;
-      }
-      stack[++stack_top] = tok;
-    } else if(tok->type == PARL){
-      stack[++stack_top] = tok;
-    } else if(tok->type == PARR){
-      while(stack[stack_top]->type != PARL){
-        queue[++queue_last] = stack[stack_top--];
-      }
-      if(stack[stack_top]->type == PARL){
-        free(stack[stack_top]);
-        stack_top--;
-      }
-    }
+    switch(tok->type){
+      case NUM:
+      case VAR:
+        queue[++queue_last] = tok;
+        break;
+      
+      case FUNC: break;  //function token
+      
+      case SEP: break; //function argument separator
+      
+      case OP:
+        o1 = tok->data.op;
+        while(stack_top >= 0 && stack[stack_top]->type == OP){
+          o2 = stack[stack_top]->data.op;
+          if((o1.assoc == ASSOC_LEFT && o1.prec <= o2.prec) ||
+             (o1.assoc == ASSOC_RIGHT && o1.prec < o2.prec)){
+            queue[++queue_last] = stack[stack_top--];
+          } else break;
+        }
+        stack[++stack_top] = tok;
+        break;
 
+      case PARL:
+        stack[++stack_top] = tok;
+        break;
+      
+      case PARR:
+        while(stack_top >= 0 && stack[stack_top]->type != PARL){
+          queue[++queue_last] = stack[stack_top--];
+        }
+        if(stack_top < 0){
+          parse_error = 1;
+        }
+        else if(stack[stack_top]->type == PARL){
+          free(stack[stack_top]);
+          stack_top--;
+        }
+        break;
+
+      case _ERR:
+        parse_error = 1;
+
+    }
     last_tok = tok;
   }
 
@@ -122,33 +169,38 @@ expr parse(const char * in){
     queue[++queue_last] = stack[stack_top--];
   }
 
+
   eq[next] = '\0';
 
- expr res;
- res.parsed = queue;
- res.size = queue_last+1;
- res.str = eq;
- return res;
+  expr res;
+  res.parsed = queue;
+  res.size = queue_last+1;
+  res.str = eq;
 
+  if(check_expr(res) != 0){
+    delete_expr(&res);
+  }
 
+  return res;
 }
 
-double eval(expr e, double x){
+double eval(const expr e, double x){
   double stack[100]; int stack_top = -1;
 
   unsigned int i;
   for(i = 0; i<e.size; i++){
     token * t = e.parsed[i];
     if (t->type == NUM){
-      stack[++stack_top] = (double) t->data.i;
+      stack[++stack_top] = t->data.n;
     } else if(t->type == VAR){
       stack[++stack_top] = x;
     } else if(t->type == OP){
       struct op_s o = t->data.op;
-      printf("%c\n", o.op);
+      d_print("%c\n", o.op);
       if(o.unary){
-        
-        stack[stack_top] = o.function.un(stack[stack_top]);
+        double a = stack[stack_top];
+
+        stack[stack_top] = o.function.un(a);
       } else{
         double a1 = stack[stack_top-1];
         double a2 = stack[stack_top];
@@ -159,21 +211,53 @@ double eval(expr e, double x){
   }
 
   return stack[0];
+}
+
+
+int check_expr(const expr e){
+  unsigned int stack = 0, i;
+
+  int expr_error = 0;
+
+  for(i = 0; i<e.size; i++){
+    token * t = e.parsed[i];
+    switch(t->type){
+      case NUM:
+      case VAR:
+        stack++; break;
+
+      case OP:
+        if(!t->data.op.unary) stack--;
+        break;
+      case FUNC:
+        break; // TODO
+      default:
+        expr_error = 1;
+
+    }
+  }
+
+  return (stack != 1) || expr_error;
 
 }
 
-void delete_expr(expr d){
-  if(d.parsed){
+
+
+void delete_expr(expr * d){
+  if(d->parsed){
     unsigned int i;
-    for(i = 0; i<d.size; i++){
-      printf("\tfreeing token %d\n", i);
-      free(d.parsed[i]);
+    for(i = 0; i<d->size; i++){
+      free(d->parsed[i]);
+      d->parsed[i] = NULL;
     }
-    free(d.parsed);
+    free(d->parsed);
+    d->parsed = NULL;
   }
-  if(d.str){
-    free(d.str);
+  if(d->str){
+    free(d->str);
+    d->str = NULL;
   }
+  d->size = 0;
 }
 /*
 

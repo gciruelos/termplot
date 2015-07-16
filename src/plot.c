@@ -3,13 +3,16 @@
 void add_function(char * cmd){
   struct function new;
   new.f = parse(cmd);
-  new.valid = 1;
+  new.valid = 0;
 
-  int i;
-  for(i = 0; i<MAX_FUNCTIONS; i++){
-    if(!functions[i].valid){
-      functions[i] = new;
-      break;
+  if(new.f.size > 0){
+    new.valid = 1;
+    int i;
+    for(i = 0; i<MAX_FUNCTIONS; i++){
+      if(!functions[i].valid){
+        functions[i] = new;
+        break;
+      }
     }
   }
 }
@@ -104,7 +107,7 @@ void draw_axis(){
 void delete_function(unsigned int i){
   if(i < MAX_FUNCTIONS){
     if(functions[i].valid){
-     delete_expr(functions[i].f);
+     delete_expr(&(functions[i].f));
      functions[i].valid = 0;
     }
   }

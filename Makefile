@@ -11,6 +11,6 @@ all: $(TARGETS)
 
 
 clean:
-	rm -f $(TARGETS) termplot
+	rm -f $(TARGETS) debug.out termplot
 
 

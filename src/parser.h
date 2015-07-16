@@ -7,6 +7,7 @@
 #include <math.h>
 #define OPS_SIZE 9
 
+#include "debug.h"
 
 enum {ASSOC_NONE=0, ASSOC_LEFT, ASSOC_RIGHT};
 
@@ -16,9 +17,9 @@ struct op_s {
     double (*bin)(double a1, double a2);
     double (*un)(double a);
   } function;
-  int prec;
-  int assoc;
-  int unary;
+  unsigned char prec;
+  unsigned char assoc;
+  unsigned char unary;
   char op;
 };
 
@@ -28,13 +29,14 @@ enum token_t{
   OP,
   PARL,
   PARR,
+  FUNC,
+  SEP,
   _ERR
 };
 
 typedef struct tok_t{
   union {
-    int i;
-    double d;
+    double n;
     struct op_s op;
   } data;
   enum token_t type;
@@ -42,12 +44,13 @@ typedef struct tok_t{
 
 typedef struct expr_t{
   token ** parsed;
-  unsigned int size;
   char * str;
+  unsigned int size;
 } expr;
 
+int check_expr(const expr e);
 expr parse(const char * in);
-double eval(expr e, double x);
-void delete_expr(expr d);
+double eval(const expr e, double x);
+void delete_expr(expr *  d);
 
 #endif
