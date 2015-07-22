@@ -81,31 +81,41 @@ void plot_function(expr e, int index){
 
 
 void draw_axis(){
-
-  int height = options.height;
-  int width = options.width;
+  int h = options.height;
+  int w = options.width;
 
   int y, x;
-  int x_0 = width/2  - options.x_center/options.x_zoom;
-  int y_0 = height/2 + options.y_center/options.y_zoom; 
+  int x_0 = w/2 - options.x_center/options.x_zoom;
+  int y_0 = h/2 + options.y_center/options.y_zoom; 
 
-  for(y = 0; y<height; y++){
-    wprintf(y, x_0, BW, "|");
-  }
+  for(y = 0; y<h; y++) wprintf(y, x_0, BW, "|");
   update_ui();
    
-  for(x = 0; x<width; x++){
-    wprintf(y_0, x, BW, "-");
+  for(x = 0; x<w; x++) wprintf(y_0, x, BW, "-");
+  update_ui();
+ 
+  
+  
+  for(x = 0; x<w; x+=10){
+    if(y_0<0){
+      wprintf(1, x, BW, "%.3f", options.x_center + options.x_zoom * (x-w/2));
+    } else if(y_0>=h-2){
+      wprintf(h-2, x, BW, "%.3f", options.x_center + options.x_zoom * (x-w/2));
+    } else{
+      wprintf(y_0+1, x, BW, "%.3f", options.x_center + options.x_zoom * (x-w/2));
+    }
   }
   update_ui();
 
-  for(x = 0; x<width; x+=10){ 
-   wprintf(y_0+1, x, BW, "%.3f", options.x_center + options.x_zoom * (x - width/2));
-  }
-  update_ui();
 
-  for(y = 0; y<height; y+=3){ 
-   wprintf(y, x_0+1, BW, " %.3f", options.y_center + options.y_zoom * (height/2-y));
+  for(y = 0; y<h; y+=3){ 
+    if(x_0<0){
+      wprintf(y, 0, BW, " %.3f", options.y_center + options.y_zoom * (h/2-y));
+    } else if(x_0>=w-10){
+      wprintf(y, w-10, BW, " %.3f", options.y_center + options.y_zoom * (h/2-y));
+    } else{
+      wprintf(y, x_0+1, BW, " %.3f", options.y_center + options.y_zoom * (h/2-y));
+    }
   }
   update_ui();
 
