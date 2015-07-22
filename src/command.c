@@ -33,7 +33,7 @@ void run_command(){
 
 void input_command(){
   int ch;
-  unsigned int i;
+  unsigned int i, current = hist_last+1;
 
   for(i = 0; i<500;i++) command[i] = '\0';
 
@@ -56,8 +56,20 @@ void input_command(){
         command[i] = command[i+1];
         i++;
       }
-    } else if(ch == KEY_UP){
-    } else if(ch == KEY_LEFT){
+    } else if(ch == KEY_UP){  
+      if(current!=hist_first){
+        strcpy(command, command_history[--current]);
+        cursor = strlen(command);
+      }
+    } else if(ch == KEY_DOWN){
+      if(current!=hist_last){
+        strcpy(command, command_history[++current]);
+        cursor = strlen(command);
+      } else if(current >= hist_last){
+        command[1] = '\0';
+        cursor = 1;
+      }
+    }else if(ch == KEY_LEFT){
       cursor--;
     } else if(ch == KEY_RIGHT){
       if(command[cursor]) cursor++;
@@ -69,11 +81,16 @@ void input_command(){
       }
       command[cursor++] = ch;
     }
+    d_print("%d, %d\n", hist_first, current);
     update_cmd(); 
     if(cursor==0) break;
   }
-  
-  if(strlen(command)>1) run_command();
+
+  if(strlen(command)>1){
+    command_history[++hist_last] = calloc(500, sizeof(char));
+    strcpy(command_history[hist_last], command);
+    run_command();
+  }
 }
 
 

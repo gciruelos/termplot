@@ -18,8 +18,6 @@ void add_function(char * cmd){
 }
 
 
-
-
 void replot_functions(){
   int i;
   for(i = 0; i<MAX_FUNCTIONS; i++){
@@ -28,10 +26,10 @@ void replot_functions(){
   }
 }
 
+
 void plot_function(expr e, int index){
   static double epsilon = 0.001;
   static double threshold = 4.0; // derivative threshold, "4 is big"
-
 
   int height = options.height;
   int width = options.width;
@@ -41,7 +39,6 @@ void plot_function(expr e, int index){
   double dx_;
 
   double dx_zoom = options.y_zoom/options.x_zoom;
-
 
   int color = index%16 + 1;
 
@@ -84,41 +81,32 @@ void draw_axis(){
   int h = options.height;
   int w = options.width;
 
+  double xz = options.x_zoom;
+  double yz = options.y_zoom;
+
   int y, x;
-  int x_0 = w/2 - options.x_center/options.x_zoom;
-  int y_0 = h/2 + options.y_center/options.y_zoom; 
+  int x_0 = w/2 - options.x_center/xz;
+  int y_0 = h/2 + options.y_center/yz; 
 
   for(y = 0; y<h; y++) wprintf(y, x_0, BW, "|");
   update_ui();
    
   for(x = 0; x<w; x++) wprintf(y_0, x, BW, "-");
   update_ui();
- 
+   
   
-  
-  for(x = 0; x<w; x+=10){
-    if(y_0<0){
-      wprintf(1, x, BW, "%.3f", options.x_center + options.x_zoom * (x-w/2));
-    } else if(y_0>=h-2){
-      wprintf(h-2, x, BW, "%.3f", options.x_center + options.x_zoom * (x-w/2));
-    } else{
-      wprintf(y_0+1, x, BW, "%.3f", options.x_center + options.x_zoom * (x-w/2));
-    }
+  for(x = 0; x<w-14; x+=15){
+    int y_ = y_0<0 ? 1 : (y_0>=h-2 ? h-2 : y_0+1);
+    
+    wprintf(y_, x, BW, xz>10||xz<0.001? "%.3e": "%.3f", options.x_center + options.x_zoom * (x-w/2));
   }
   update_ui();
 
-
-  for(y = 0; y<h; y+=3){ 
-    if(x_0<0){
-      wprintf(y, 0, BW, " %.3f", options.y_center + options.y_zoom * (h/2-y));
-    } else if(x_0>=w-10){
-      wprintf(y, w-10, BW, " %.3f", options.y_center + options.y_zoom * (h/2-y));
-    } else{
-      wprintf(y, x_0+1, BW, " %.3f", options.y_center + options.y_zoom * (h/2-y));
-    }
+  for(y = 0; y<h; y+=3){
+    int x_ = x_0<0? 0 : x_0>=w-15? w-15 : x_0+1;
+    wprintf(y, x_, BW, yz > 10||yz<0.001? " %.3e" : " %.3f", options.y_center + options.y_zoom * (h/2-y)); 
   }
   update_ui();
-
 }
 
 

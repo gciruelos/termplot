@@ -109,6 +109,9 @@ void init_ui(){
   }
 
   buffer_next = 0; 
+  
+  hist_last = -1;
+  hist_first = 0;
 }
 
 
@@ -134,7 +137,7 @@ void set_terminal_size(){
 }
 
 void update_ui(){
-  int i;
+  unsigned int i;
   struct buffer_entry * b;
 
 
