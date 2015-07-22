@@ -6,13 +6,14 @@ struct{
   char name[10];
   void (*func)(char * arg);
 } cmds[CMDS_NUM] = {{"nop", nothing},
-                     {"plot", add_function}};
+                    {"plot", add_function}};
 
 
-void run_command(char * command){
+void run_command(){
+  char * cmdptr = &command[1]; //medio cabeza
   int cmd = 0, i;
   for(i = 0; i<CMDS_NUM; i++){
-    if(strstr(command, cmds[i].name) != NULL){
+    if(strstr(cmdptr, cmds[i].name) != NULL){
       cmd = i;
       break;
     }
@@ -21,7 +22,7 @@ void run_command(char * command){
   d_print("cmd: %d - %s\n", cmd, cmds[cmd].name);
 
   char * args = NULL;
-  args = command + strspn(command, cmds[cmd].name);
+  args = cmdptr + strspn(cmdptr, cmds[cmd].name);
   
   while(isspace(*args)) args++;
 
@@ -32,30 +33,47 @@ void run_command(char * command){
 
 void input_command(){
   int ch;
-  int i = 0;
-  int height = options.height;
-  wprintf(height-1, 0, BW, ":");
-  update_ui();
-  char command[500]; 
+  unsigned int i;
+
+  for(i = 0; i<500;i++) command[i] = '\0';
+
+  command[0] = ':';
+  command[1] = '\0';
+  cursor = 1;
+  update_cmd();
 
   while((ch = w_getch()) != 10){
-    if(ch == 127){ //backspace
-      i--;
-      wprintf(height-1, i+1, BW, " ");
-      wprintf(height-1, i+1, BW, "");
+    if(ch == 127){ // backspace
+      i = cursor-1;
+      while(command[i]){
+        command[i] = command[i+1];
+        i++;
+      }
+      cursor--;
+    } else if(ch == KEY_DC){ // delete
+      i = cursor;
+      while(command[i]){
+        command[i] = command[i+1];
+        i++;
+      }
     } else if(ch == KEY_UP){
+    } else if(ch == KEY_LEFT){
+      cursor--;
+    } else if(ch == KEY_RIGHT){
+      if(command[cursor]) cursor++;
     } else{
-      wprintf(height-1, i+1, BW, "%c", ch);
-      command[i] = ch;
-      i++;
+      i = strlen(command)+1; 
+      while(i>cursor){
+        command[i] = command[i-1];
+        i--;
+      }
+      command[cursor++] = ch;
     }
-    update_ui();
+    update_cmd(); 
+    if(cursor==0) break;
   }
-  command[i] = '\0'; 
-
-
-
-  run_command(command);
+  
+  if(strlen(command)>1) run_command();
 }
 
 

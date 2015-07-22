@@ -15,8 +15,10 @@ char * command_history[CMD_HIST];
 unsigned int hist_last, hist_first;
 // kind of bounded stack
 
+char command[500];
+unsigned int cursor;
 
-void run_command(char * command);
+void run_command();
 void input_command();
 
 

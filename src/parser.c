@@ -2,8 +2,6 @@
 #include "parser.h"
 
 
-
-
 double _neg(double a){return -a;}
 double _add(double a1, double a2){return a1+a2;}
 double _sub(double a1, double a2){return a1-a2;}
@@ -12,7 +10,7 @@ double _div(double a1, double a2){return a1/a2;}
 double _mod(double a1, double a2){return fmod(a1,a2);}
 
 
-struct op_s ops[OPS_SIZE]={
+struct op_s ops[OPS_NUM]={
   {_neg, 10, ASSOC_RIGHT, 1, '_'},
   {pow, 9, ASSOC_RIGHT, 0, '^'},
   {_mul, 8, ASSOC_LEFT, 0, '*'},
@@ -22,9 +20,23 @@ struct op_s ops[OPS_SIZE]={
   {_sub, 5, ASSOC_LEFT, 0, '-'},
 };
 
+
+struct func_s funcs[FUNCS_NUM]={
+  {sin, "sin"},
+  {cos, "cos"},
+  {tan, "tan"},
+  {sqrt, "sqrt"},
+  {floor, "floor"},
+  {ceil, "ceil"},
+  {fabs, "abs"},
+  {log, "ln"},
+  {log, "log"},
+  {log10, "log10"}
+};
+
 void assign(struct op_s * op, char opch){
   int i;
-  for(i = 0; i<OPS_SIZE; i++){
+  for(i = 0; i<OPS_NUM; i++){
     if(ops[i].op == opch){
       *op = ops[i];
     }
@@ -38,8 +50,24 @@ unsigned int next_token(const char *expr, token * res){
   unsigned int idx = 0, i;
 
 
+  //look for functions
+  for(i = 0; i<FUNCS_NUM; i++){
+    if (strstr(expr, funcs[i].name) == expr){
+      d_print(funcs[i].name);
+
+      res->type = FUNC;
+      
+      res->data.func.f = funcs[i].f;
+      strcpy(res->data.func.name, funcs[i].name);
+
+      idx += strlen(funcs[i].name);
+      return idx;
+    }
+  }
+
+
   //look for operators
-  for(i = 0; i<OPS_SIZE; i++){
+  for(i = 0; i<OPS_NUM; i++){
     if (*expr == ops[i].op){
       res->type = OP;
       assign(&(res->data.op), *expr);
@@ -125,7 +153,9 @@ expr parse(const char * in){
         queue[++queue_last] = tok;
         break;
       
-      case FUNC: break;  //function token
+      case FUNC:
+        stack[++stack_top] = tok;
+        break;  //function token
       
       case SEP: break; //function argument separator
       
@@ -206,6 +236,10 @@ double eval(const expr e, double x){
         
         stack[--stack_top] = o.function.bin(a1, a2);
       }
+    } else if(t->type == FUNC){
+      struct func_s f = t->data.func;
+      double a = stack[stack_top];
+      stack[stack_top] = f.f(a);
     }
   }
 

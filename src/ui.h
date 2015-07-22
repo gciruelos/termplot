@@ -13,12 +13,12 @@ void init_ui();
 void clean_ui();
 
 
+/* INTERFACE FUNCTIONS */ 
 int input();
 void wprintf(int y, int x, unsigned int color, char * fmt, ...);
+void update_cmd();
 
 
-
-/* INTERFACE FUNCTIONS */ 
 void set_terminal_size();
 void update_ui();
 int w_getch();

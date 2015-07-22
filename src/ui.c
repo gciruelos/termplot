@@ -23,9 +23,16 @@ struct buffer_entry{
   int y;
   unsigned int color;
 } * print_buffer[BUFFER_SIZE];
-int buffer_next;
+unsigned int buffer_next;
 
 
+void update_cmd(){
+  curs_set(1);
+  mvaddstr(options.height-1, 0, command);
+  clrtoeol();
+  move(options.height-1, cursor);
+  refresh();
+}
 
 
 
@@ -42,6 +49,7 @@ void wprintf(int y, int x, unsigned int color, char * fmt, ...){
   b->x = x;
   b->color = color;
 }
+
 
 
 int input(){
@@ -100,7 +108,7 @@ void init_ui(){
     print_buffer[i]->buf = calloc(MAX_LEN, sizeof(char));
   }
 
-  buffer_next = 0;
+  buffer_next = 0; 
 }
 
 
@@ -127,15 +135,19 @@ void set_terminal_size(){
 
 void update_ui(){
   int i;
-  struct buffer_entry * b; 
+  struct buffer_entry * b;
+
+
+  curs_set(1);
   for(i = 0; i < buffer_next; i++){
     b = print_buffer[i];
     attron(COLOR_PAIR(b->color));
     mvaddstr(b->y, b->x, b->buf);
     attroff(COLOR_PAIR(b->color));
-  } 
+  }
   buffer_next = 0;
-  //refresh();
+  curs_set(0);
+  refresh();
 }
 
 int w_getch(){
@@ -165,7 +177,7 @@ void start_ui() {
 
 
 void end_ui() {
-  if (curses_started && !isendwin()){
+ if (curses_started && !isendwin()){
     delwin(win);
     endwin();
     refresh();

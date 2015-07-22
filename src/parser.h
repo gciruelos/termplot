@@ -4,8 +4,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
-#define OPS_SIZE 9
+
+#define OPS_NUM 9
+#define FUNCS_NUM 10
 
 #include "debug.h"
 
@@ -23,6 +26,11 @@ struct op_s {
   char op;
 };
 
+struct func_s {
+  double (*f)(double a);
+  char name[8];
+};
+
 enum token_t{
   NUM,
   VAR,
@@ -38,6 +46,7 @@ typedef struct tok_t{
   union {
     double n;
     struct op_s op;
+    struct func_s func;
   } data;
   enum token_t type;
 } token;

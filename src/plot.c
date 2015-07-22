@@ -36,7 +36,7 @@ void plot_function(expr e, int index){
   int height = options.height;
   int width = options.width;
 
-  int x, y;
+  int x, y, last_y = 0;
   double x_, y_;
   double dx_;
 
@@ -51,8 +51,15 @@ void plot_function(expr e, int index){
 
     y = height/2 + (options.y_center - y_)/options.y_zoom;
 
+
     dx_ = (eval(e, x_+epsilon)-eval(e, x_))/epsilon;
 
+
+/*    if(x>0){
+      int yi;
+      for(yi = last_y+1; yi<y;y++) wprintf(yi, x, color, "x");
+    }
+*/
     if(dx_ < dx_zoom/threshold &&  dx_ > -dx_zoom/threshold ){
       wprintf(y+1, x, color, "_");
     } else if(dx_ > dx_zoom/threshold && dx_ < dx_zoom*threshold){
@@ -62,6 +69,8 @@ void plot_function(expr e, int index){
     } else{
       wprintf(y, x, color, "|");
     }
+
+    last_y = y;
   }
 
   wprintf(1+index, 0, BW, "%d", index); 
