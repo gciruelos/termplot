@@ -9,6 +9,9 @@ struct{
 
   int width;
   int height;
+
+  int quit;
+
 } options;
 
 void init_structs();

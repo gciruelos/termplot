@@ -15,7 +15,7 @@
  *
  */
 
-#define BUFFER_SIZE 500
+#define BUFFER_SIZE 1000
 #define MAX_LEN 300
 struct buffer_entry{
   char * buf;
@@ -26,7 +26,7 @@ struct buffer_entry{
 unsigned int buffer_next;
 
 
-void update_cmd(){
+inline void update_cmd(){
   curs_set(1);
   mvaddstr(options.height-1, 0, command);
   clrtoeol();
@@ -36,23 +36,27 @@ void update_cmd(){
 
 
 
-
-void wprintf(int y, int x, unsigned int color, char * fmt, ...){
-  struct buffer_entry * b = print_buffer[buffer_next++];
+#define IN_RANGE(x, y) ((x)>=0 && (x)<options.width && (y)>=0 && (y)<options.height)
+inline void wprintf(int y, int x, unsigned int color, char * fmt, ...){
   
-  va_list args;
-  va_start(args, fmt);
-  vsprintf(b->buf, fmt, args);
-  va_end(args);
+  if(IN_RANGE(x,y)){
+    struct buffer_entry * b = print_buffer[buffer_next++];
+  
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(b->buf, fmt, args);
+    va_end(args);
 
-  b->y = y;
-  b->x = x;
-  b->color = color;
+    b->y = y;
+    b->x = x;
+    b->color = color;
+  }
 }
 
 
 
-int input(){
+
+inline int input(){
   static double zoom_factor = 0.1;
 
   int ch = w_getch();
@@ -112,11 +116,19 @@ void init_ui(){
   
   hist_last = -1;
   hist_first = 0;
+  for(i = 0; i<CMD_HIST; i++){
+    command_history[i] = calloc(CMD_SIZE, sizeof(char));
+  }
 }
 
 
 void clean_ui(){
   int i;
+
+
+  for(i = 0; i<CMD_HIST; i++){
+    free(command_history[i]);
+  }
 
   for(i = 0; i<BUFFER_SIZE; i++){
     free(print_buffer[i]->buf);
@@ -132,11 +144,11 @@ void clean_ui(){
 
 /* INTERFACE FUNCTIONS */ 
 
-void set_terminal_size(){
+inline void set_terminal_size(){
   getmaxyx(stdscr,options.height,options.width);
 }
 
-void update_ui(){
+inline void update_ui(){
   unsigned int i;
   struct buffer_entry * b;
 
@@ -153,7 +165,7 @@ void update_ui(){
   refresh();
 }
 
-int w_getch(){
+inline int w_getch(){
   return getch();
 }
 

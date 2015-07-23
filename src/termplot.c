@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
   start_debug();
   
   int x;
-  while (1) {
+  while (!options.quit) {
     clear();
 
     set_terminal_size();
@@ -24,6 +24,7 @@ int main(int argc, char* argv[]){
     if(x == -1) break;
     
     refresh();
+    d_print("quit: %d\n", options.quit);
   } 
 
   clean_plotter();

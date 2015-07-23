@@ -28,13 +28,15 @@ void replot_functions(){
 
 
 void plot_function(expr e, int index){
-  static double epsilon = 0.001;
-  static double threshold = 4.0; // derivative threshold, "4 is big"
+  //static double epsilon = 0.001;
+  //static double threshold = 4.0; // derivative threshold, "4 is big"
+
+  static char c[1] = "#";
 
   int height = options.height;
   int width = options.width;
 
-  int x, y, last_y = 0;
+  int x, y, yi, last_y = 0;
   double x_, y_;
   double dx_;
 
@@ -42,21 +44,24 @@ void plot_function(expr e, int index){
 
   int color = index%16 + 1;
 
-  for(x = 0; x<width; x++){
+  for(x = -1; x<width; x++){
     x_ = options.x_center + options.x_zoom * (x - width/2);
     y_ = eval(e, x_);
 
     y = height/2 + (options.y_center - y_)/options.y_zoom;
 
-
-    dx_ = (eval(e, x_+epsilon)-eval(e, x_))/epsilon;
-
-
-/*    if(x>0){
-      int yi;
-      for(yi = last_y+1; yi<y;y++) wprintf(yi, x, color, "x");
+    if(x>=0 && ((y>=0 && y<height) || (last_y>=0 && last_y<height))){
+      wprintf(y, x, color, c);
+      if(y>last_y+1)
+        for(yi = last_y+1; yi<y && yi<height; yi++) wprintf(yi, x, color, c);
+      
+      else if(y<last_y-1)
+        for(yi = y+1; yi<last_y && yi<height; yi++) wprintf(yi, x, color, c);
+      update_ui();
     }
-*/
+
+/*  
+    dx_ = (eval(e, x_+epsilon)-eval(e, x_))/epsilon;
     if(dx_ < dx_zoom/threshold &&  dx_ > -dx_zoom/threshold ){
       wprintf(y+1, x, color, "_");
     } else if(dx_ > dx_zoom/threshold && dx_ < dx_zoom*threshold){
@@ -66,7 +71,7 @@ void plot_function(expr e, int index){
     } else{
       wprintf(y, x, color, "|");
     }
-
+*/ 
     last_y = y;
   }
 
@@ -96,7 +101,7 @@ void draw_axis(){
    
   
   for(x = 0; x<w-14; x+=15){
-    int y_ = y_0<0 ? 1 : (y_0>=h-2 ? h-2 : y_0+1);
+    int y_ = y_0<0 ? 1 : y_0>=h-2 ? h-2 : y_0+1;
     
     wprintf(y_, x, BW, xz>10||xz<0.001? "%.3e": "%.3f", options.x_center + options.x_zoom * (x-w/2));
   }

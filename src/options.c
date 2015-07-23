@@ -5,5 +5,8 @@ void init_structs(){
   options.y_center = 0.0;
   options.x_zoom = 0.1;
   options.y_zoom = 0.2;
+
+  options.quit = 0;
+
 }
 

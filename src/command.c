@@ -2,12 +2,18 @@
 
 void nothing(char * arg){;}
 
+void quit(char * arg){
+  options.quit = 1;
+}
+
 struct{
   char name[10];
   void (*func)(char * arg);
 } cmds[CMDS_NUM] = {{"nop", nothing},
-                    {"plot", add_function}};
-
+                    {"plot", add_function},
+                    {"quit", quit},
+                    {"q", quit}
+                   };
 
 void run_command(){
   char * cmdptr = &command[1]; //medio cabeza
@@ -35,7 +41,7 @@ void input_command(){
   int ch;
   unsigned int i, current = hist_last+1;
 
-  for(i = 0; i<500;i++) command[i] = '\0';
+  for(i = 0; i<CMD_SIZE; i++) command[i] = '\0';
 
   command[0] = ':';
   command[1] = '\0';
@@ -58,16 +64,19 @@ void input_command(){
       }
     } else if(ch == KEY_UP){  
       if(current!=hist_first){
-        strcpy(command, command_history[--current]);
+        current = (current-1)%CMD_HIST;
+        strcpy(command, command_history[current]);
         cursor = strlen(command);
       }
     } else if(ch == KEY_DOWN){
-      if(current!=hist_last){
-        strcpy(command, command_history[++current]);
+      if(current<hist_last){
+        current = (current+1)%CMD_HIST;
+        strcpy(command, command_history[current]);
         cursor = strlen(command);
-      } else if(current >= hist_last){
+      } else{
         command[1] = '\0';
         cursor = 1;
+        if(current == hist_last) current = (current+1)%CMD_HIST;
       }
     }else if(ch == KEY_LEFT){
       cursor--;
@@ -81,13 +90,17 @@ void input_command(){
       }
       command[cursor++] = ch;
     }
+
+    wprintf(0,0,BW, "%d, %d", current, hist_last);
+    update_ui();
     d_print("%d, %d\n", hist_first, current);
     update_cmd(); 
     if(cursor==0) break;
   }
 
-  if(strlen(command)>1){
-    command_history[++hist_last] = calloc(500, sizeof(char));
+  if(strlen(command)>1){ 
+    hist_last = (hist_last+1)%CMD_HIST;
+    //if((hist_last+1)%CMD_HIST == hist_first) hist_first = (hist_first+1)%CMD_HIST;
     strcpy(command_history[hist_last], command);
     run_command();
   }
