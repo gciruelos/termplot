@@ -27,6 +27,7 @@ void replot_functions(){
 }
 
 
+#define MAX(x,y) (x)>(y)?x:y
 void plot_function(expr e, int index){
   //static double epsilon = 0.001;
   //static double threshold = 4.0; // derivative threshold, "4 is big"
@@ -44,6 +45,10 @@ void plot_function(expr e, int index){
 
   int color = index%16 + 1;
 
+
+  wprintf(0,0,BW, "plotting...");
+  update_ui();
+
   for(x = -1; x<width; x++){
     x_ = options.x_center + options.x_zoom * (x - width/2);
     y_ = eval(e, x_);
@@ -53,12 +58,14 @@ void plot_function(expr e, int index){
     if(x>=0 && ((y>=0 && y<height) || (last_y>=0 && last_y<height))){
       wprintf(y, x, color, c);
       if(y>last_y+1)
-        for(yi = last_y+1; yi<y && yi<height; yi++) wprintf(yi, x, color, c);
+        for(yi=MAX(last_y+1,0); yi<y && yi<height; yi++) wprintf(yi, x, color, c);
       
       else if(y<last_y-1)
-        for(yi = y+1; yi<last_y && yi<height; yi++) wprintf(yi, x, color, c);
+        for(yi=MAX(y+1,0); yi<last_y && yi<height; yi++) wprintf(yi, x, color, c);
       update_ui();
     }
+
+
 
 /*  
     dx_ = (eval(e, x_+epsilon)-eval(e, x_))/epsilon;
@@ -75,6 +82,7 @@ void plot_function(expr e, int index){
     last_y = y;
   }
 
+  wprintf(0,0,BW, "           ");
   wprintf(1+index, 0, BW, "%d", index); 
   wprintf(1+index, 2, color, "f(x) = %s", e.str); 
 

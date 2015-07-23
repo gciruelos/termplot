@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wextra -Wall -ggdb -O2 -pedantic
+CFLAGS = -Wextra -Wall -ggdb -pg -O2 -pedantic
 
 TARGETS = termplot.o options.o ui.o command.o plot.o parser.o debug.o
 
@@ -7,7 +7,7 @@ TARGETS = termplot.o options.o ui.o command.o plot.o parser.o debug.o
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 all: $(TARGETS)
-	$(CC) -lm -lncurses  $(TARGETS) -o termplot
+	$(CC) -lm -lncurses -pg  $(TARGETS) -o termplot
 
 
 clean:

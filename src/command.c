@@ -90,8 +90,7 @@ void input_command(){
       }
       command[cursor++] = ch;
     }
-
-    wprintf(0,0,BW, "%d, %d", current, hist_last);
+ 
     update_ui();
     d_print("%d, %d\n", hist_first, current);
     update_cmd(); 

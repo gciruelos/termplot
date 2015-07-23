@@ -38,7 +38,6 @@ inline void update_cmd(){
 
 #define IN_RANGE(x, y) ((x)>=0 && (x)<options.width && (y)>=0 && (y)<options.height)
 inline void wprintf(int y, int x, unsigned int color, char * fmt, ...){
-  
   if(IN_RANGE(x,y)){
     struct buffer_entry * b = print_buffer[buffer_next++];
   
