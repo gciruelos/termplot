@@ -27,7 +27,7 @@ void replot_functions(){
 }
 
 
-#define MAX(x,y) (x)>(y)?x:y
+#define MAX(x,y) (x)>(y)?(x):(y)
 void plot_function(expr e, int index){
   //static double epsilon = 0.001;
   //static double threshold = 4.0; // derivative threshold, "4 is big"

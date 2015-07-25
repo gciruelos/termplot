@@ -133,7 +133,13 @@ expr parse(const char * in){
     token * tok = malloc(sizeof(token));
   
     forward = next_token(in, tok);
-
+    
+    /*
+    printf("0x%x\n", in);
+    prnt_token(*tok); printf("\n");
+    print_caca(stack, stack_top+1);
+    print_caca(queue, queue_last+1);
+    */
     while(forward){
       eq[next++] = *(in++);
       forward--;
@@ -185,6 +191,9 @@ expr parse(const char * in){
         else if(stack[stack_top]->type == PARL){
           free(stack[stack_top]);
           stack_top--;
+        }
+        if(stack[stack_top]->type == FUNC){
+          queue[++queue_last] = stack[stack_top--];
         }
         break;
 
@@ -292,16 +301,21 @@ void delete_expr(expr * d){
   }
   d->size = 0;
 }
-/*
 
 
 void prnt_token(token tok){
   if(tok.type == NUM){
-    printf("{NUM %d}", tok.data.i);
+    printf("{NUM %.2f}", tok.data.n);
   } else if(tok.type == OP){
     printf("{OP %c}", tok.data.op.op);
   } else if(tok.type == VAR){
     printf("{VAR X}");
+  } else if(tok.type == FUNC){
+    printf("{FUNC %s}", tok.data.func.name); 
+  } else if(tok.type == PARL){
+    printf("{PARL (}"); 
+  } else if(tok.type == PARR){
+    printf("{PARR )}"); 
   }else{
     printf("{WHAT %d}", tok.type);
   }
@@ -315,7 +329,7 @@ void print_caca(token ** s, int sz){
  }
  printf("\n");
 }
-
+/*
 int main(){
   char e[] = "x^2";
   expr a = parse(e);
