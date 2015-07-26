@@ -4,10 +4,12 @@ Terminal-based mathematical function plotter
 # Try it out
 
 First you have to clone the repository
+
     git clone https://github.com/gciruelos/termplot.git
     cd termplot
 
 Now build and run
+
     make
     ./termplot
 
