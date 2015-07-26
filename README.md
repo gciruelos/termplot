@@ -22,5 +22,5 @@ And it will work. Termplot can also plot implicit functions, like
     :implicit x^2+y^2 = 1
 
 #Screenshots
-![screenshot](info/screen1.png "Screenshot")
+![![Scren](https://raw.githubusercontent.com/gciruelos/termplot/master/info/screen1.png)](info/screen1.png "Screenshot")
 
