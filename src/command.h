@@ -8,7 +8,7 @@
 #include "debug.h"
 
 
-#define CMDS_NUM 4
+#define CMDS_NUM 5
 #define CMD_HIST 10
 #define CMD_SIZE 500
 

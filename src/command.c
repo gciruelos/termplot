@@ -12,6 +12,7 @@ struct{
 } cmds[CMDS_NUM] = {{"nop", nothing},
                     {"plot", add_function},
                     {"quit", quit},
+                    {"implicit", add_implicit},
                     {"q", quit}
                    };
 

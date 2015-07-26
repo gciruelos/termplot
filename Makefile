@@ -1,23 +1,17 @@
 CC = gcc
-FLAGS = -Wextra -Wall -O3 -pedantic
+FLAGS = -Wextra -Wall -pedantic -O2 -fopenmp
 
-TARGETS = options.o ui.o command.o plot.o parser.o debug.o 
-MAIN = termplot.o
-TEST = test.o
-
-test.o: test/test.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+TARGETS = termplot.o options.o ui.o command.o plot.o parser.o debug.o 
 
 %.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-
 all: $(MAIN) $(TARGETS)
 	$(CC) -lm -lncurses  $(MAIN) $(TARGETS) -o termplot
 
-test: $(TEST) $(TARGETS)
-	$(CC) -lm -lncurses  $(TEST) $(TARGETS) -o testbin
+test: $(TARGETS)
+	cd test && make all
 
 clean:
-	rm -f $(MAIN) $(TEST) $(TARGETS) debug.out termplot testbin
+	rm -f test.o $(TARGETS) debug.out termplot testbin
 

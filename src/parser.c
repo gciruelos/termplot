@@ -105,7 +105,8 @@ unsigned int next_token(const char *expr, token * res){
   switch(*expr){ 
     case '(': res->type = PARL; idx++; break;
     case ')': res->type = PARR; idx++; break;
-    case 'x': res->type = VAR; idx++; break;
+    case 'x': res->type = VARX; idx++; break;
+    case 'y': res->type = VARY; idx++; break;
     default: res->type = _ERR; idx++; break;
   }
   return idx;
@@ -155,7 +156,8 @@ expr parse(const char * in){
     
     switch(tok->type){
       case NUM:
-      case VAR:
+      case VARX:
+      case VARY:
         queue[++queue_last] = tok;
         break;
       
@@ -223,7 +225,7 @@ expr parse(const char * in){
   return res;
 }
 
-double eval(const expr e, double x){
+double eval(const expr e, double x, double y){
   double stack[100]; int stack_top = -1;
 
   unsigned int i;
@@ -231,8 +233,10 @@ double eval(const expr e, double x){
     token * t = e.parsed[i];
     if (t->type == NUM){
       stack[++stack_top] = t->data.n;
-    } else if(t->type == VAR){
+    } else if(t->type == VARX){
       stack[++stack_top] = x;
+    } else if(t->type == VARY){
+      stack[++stack_top] = y; 
     } else if(t->type == OP){
       struct op_s o = t->data.op; 
       if(o.unary){
@@ -265,7 +269,8 @@ int check_expr(const expr e){
     token * t = e.parsed[i];
     switch(t->type){
       case NUM:
-      case VAR:
+      case VARX:
+      case VARY:
         stack++; break;
 
       case OP:
@@ -308,8 +313,10 @@ void prnt_token(token tok){
     printf("{NUM %.2f}", tok.data.n);
   } else if(tok.type == OP){
     printf("{OP %c}", tok.data.op.op);
-  } else if(tok.type == VAR){
+  } else if(tok.type == VARX){
     printf("{VAR X}");
+  } else if(tok.type == VARY){
+    printf("{VAR Y}");
   } else if(tok.type == FUNC){
     printf("{FUNC %s}", tok.data.func.name); 
   } else if(tok.type == PARL){

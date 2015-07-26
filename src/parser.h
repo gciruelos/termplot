@@ -33,7 +33,8 @@ struct func_s {
 
 enum token_t{
   NUM,
-  VAR,
+  VARX,
+  VARY,
   OP,
   PARL,
   PARR,
@@ -59,7 +60,7 @@ typedef struct expr_t{
 
 int check_expr(const expr e);
 expr parse(const char * in);
-double eval(const expr e, double x);
+double eval(const expr e, double x, double y);
 void delete_expr(expr *  d);
 
 
