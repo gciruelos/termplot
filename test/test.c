@@ -17,6 +17,7 @@ double random_(){
 double f1(double x){return x*x+1;}
 double f2(double x){return pow(sin(x),4);}
 double f3(double x){return pow(2,pow(sin(x),2));}
+double f4(double x){return pow(x-2, 2)+1;}
 
 void parse1(){
   unsigned int i;
@@ -26,21 +27,26 @@ void parse1(){
   e = parse("x^2+1");
   for(i = 0; i<1000; i++){
     x = random_();
-    ASSERT_SIM(eval(e, x), f1(x));
+    ASSERT_SIM(eval(e, x, 0), f1(x));
   }
 
   e = parse("sin(x)^4");
   for(i = 0; i<1000; i++){
     x = random_();
-    ASSERT_SIM(eval(e, x), f2(x));
+    ASSERT_SIM(eval(e, x, 0), f2(x));
   }
 
   e = parse("2^(sin(x)^2)");
   for(i = 0; i<1000; i++){
     x = random_();
-    ASSERT_SIM(eval(e, x), f3(x));
+    ASSERT_SIM(eval(e, x, 0), f3(x));
   }
 
+  e = parse("(x-2)^2 + 1");
+  for(i = 0; i<1000; i++){
+    x = random_();
+    ASSERT_SIM(eval(e, x, 0), f4(x));
+  }
 }
 
 

@@ -41,7 +41,7 @@ void assign(struct op_s * op, char opch){
       *op = ops[i];
     }
   }
-  // op? op, op. op op op op. op!
+  /* op? op, op. op op op op. op! */
 }
 
 
@@ -50,7 +50,7 @@ unsigned int next_token(const char *expr, token * res){
   unsigned int idx = 0, i;
 
 
-  //look for functions
+  /*look for functions*/
   for(i = 0; i<FUNCS_NUM; i++){
     if (strstr(expr, funcs[i].name) == expr){
       d_print(funcs[i].name);
@@ -66,7 +66,7 @@ unsigned int next_token(const char *expr, token * res){
   }
 
 
-  //look for operators
+  /*look for operators*/
   for(i = 0; i<OPS_NUM; i++){
     if (*expr == ops[i].op){
       res->type = OP;
@@ -135,7 +135,7 @@ expr parse(const char * in){
   
     forward = next_token(in, tok);
     
-    /*
+    /* 
     printf("0x%x\n", in);
     prnt_token(*tok); printf("\n");
     print_caca(stack, stack_top+1);
@@ -147,7 +147,7 @@ expr parse(const char * in){
     }
     
     
-    //check if - is unary or binary
+    /* check if - is unary or binary */
     if(tok->type == OP && tok->data.op.op == '-'){
       if(last_tok == NULL || last_tok->type == PARL || last_tok->type == OP){
         assign(&(tok->data.op), '_');
@@ -163,9 +163,9 @@ expr parse(const char * in){
       
       case FUNC:
         stack[++stack_top] = tok;
-        break;  //function token
+        break;  /* function token */
       
-      case SEP: break; //function argument separator
+      case SEP: break; /* function argument separator */
       
       case OP:
         o1 = tok->data.op;
@@ -183,7 +183,7 @@ expr parse(const char * in){
         stack[++stack_top] = tok;
         break;
       
-      case PARR:
+      case PARR: 
         while(stack_top >= 0 && stack[stack_top]->type != PARL){
           queue[++queue_last] = stack[stack_top--];
         }
@@ -194,11 +194,11 @@ expr parse(const char * in){
           free(stack[stack_top]);
           stack_top--;
         }
-        if(stack[stack_top]->type == FUNC){
+
+        if(stack_top>=0 && stack[stack_top]->type == FUNC){
           queue[++queue_last] = stack[stack_top--];
         }
         break;
-
       case _ERR:
         parse_error = 1;
 
@@ -277,7 +277,7 @@ int check_expr(const expr e){
         if(!t->data.op.unary) stack--;
         break;
       case FUNC:
-        break; // TODO
+        break;
       default:
         expr_error = 1;
 

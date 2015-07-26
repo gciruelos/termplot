@@ -17,7 +17,7 @@ struct{
                    };
 
 void run_command(){
-  char * cmdptr = &command[1]; //medio cabeza
+  char * cmdptr = &command[1]; /*medio cabeza*/
   int cmd = 0, i;
   for(i = 0; i<CMDS_NUM; i++){
     if(strstr(cmdptr, cmds[i].name) != NULL){
@@ -26,9 +26,9 @@ void run_command(){
     }
   }
 
-  d_print("cmd: %d - %s\n", cmd, cmds[cmd].name);
+  /* d_print("cmd: %d - %s\n", cmd, cmds[cmd].name); */
 
-  char * args = NULL;
+  char* args =  NULL;
   args = cmdptr + strspn(cmdptr, cmds[cmd].name);
   
   while(isspace(*args)) args++;
@@ -50,14 +50,14 @@ void input_command(){
   update_cmd();
 
   while((ch = w_getch()) != 10){
-    if(ch == 127){ // backspace
+    if(ch == 127){ /* backspace */
       i = cursor-1;
       while(command[i]){
         command[i] = command[i+1];
         i++;
       }
       cursor--;
-    } else if(ch == KEY_DC){ // delete
+    } else if(ch == KEY_DC){ /* delete */
       i = cursor;
       while(command[i]){
         command[i] = command[i+1];
@@ -100,7 +100,7 @@ void input_command(){
 
   if(strlen(command)>1){ 
     hist_last = (hist_last+1)%CMD_HIST;
-    //if((hist_last+1)%CMD_HIST == hist_first) hist_first = (hist_first+1)%CMD_HIST;
+    /*if((hist_last+1)%CMD_HIST == hist_first) hist_first = (hist_first+1)%CMD_HIST;*/
     strcpy(command_history[hist_last], command);
     run_command();
   }

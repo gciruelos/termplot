@@ -37,7 +37,7 @@ inline void update_cmd(){
 }
 
 
-inline void wprintf(int y, int x, unsigned int color, char * fmt, ...){
+inline void wcprintf(int y, int x, unsigned int color, char * fmt, ...){
   if(IN_RANGE(x,y)){
     struct buffer_entry * b = print_buffer[buffer_next++];
   
@@ -88,7 +88,7 @@ inline int input(){
       break;
   }
 
-  return 0; // everyting went fine
+  return 0; /* everyting went fine */
 }
 
 
@@ -100,7 +100,7 @@ void init_ui(){
   int i, j;
   for(i = 0; i<16; i++){
      for(j = 0; j<16; j++){
-       init_pair(j*16 + i, i, j); // bg*16 + fg
+       init_pair(j*16 + i, i, j); /* bg*16 + fg */
      }
   }
 

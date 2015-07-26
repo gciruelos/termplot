@@ -3,7 +3,7 @@
 void add_function(char * cmd){
   struct function new;
   new.f = parse(cmd);
-  //new.g = y;
+  /*new.g = y;*/
 
   new.type = EXPLICIT; 
   new.valid = 0;
@@ -76,7 +76,7 @@ void plot_function(expr e, int index){
   int color = index%16 + 1;
 
 
-  wprintf(0,0,BW, "plotting...");
+  wcprintf(0,0,BW, "plotting...");
   update_ui();
 
   for(x = -1; x<width; x++){
@@ -86,21 +86,21 @@ void plot_function(expr e, int index){
     y = height/2 + (options.y_center - y_)/options.y_zoom;
 
     if(x>=0 && ((y>=0 && y<height) || (last_y>=0 && last_y<height))){
-      wprintf(y, x, color, c);
+      wcprintf(y, x, color, c);
       if(y>last_y+1)
-        for(yi=MAX(last_y+1,0); yi<y && yi<height; yi++) wprintf(yi, x, color, c);
+        for(yi=MAX(last_y+1,0); yi<y && yi<height; yi++) wcprintf(yi, x, color, c);
       
       else if(y<last_y-1)
-        for(yi=MAX(y+1,0); yi<last_y && yi<height; yi++) wprintf(yi, x, color, c);
+        for(yi=MAX(y+1,0); yi<last_y && yi<height; yi++) wcprintf(yi, x, color, c);
       update_ui();
     }
     
     last_y = y;
   }
 
-  wprintf(0,0,BW, "           ");
-  wprintf(1+index, 0, BW, "%d", index); 
-  wprintf(1+index, 2, color, "f(x) = %s", e.str); 
+  wcprintf(0,0,BW, "           ");
+  wcprintf(1+index, 0, BW, "%d", index); 
+  wcprintf(1+index, 2, color, "f(x) = %s", e.str); 
 
   update_ui();
 }
@@ -118,7 +118,7 @@ void plot_implicit(expr e1, expr e2, int index){
   int color = index%16 + 1;
 
 
-  wprintf(0,0,BW, "plotting...");
+  wcprintf(0,0,BW, "plotting...");
   update_ui();
 
   for(x = 0; x<width; x++){
@@ -130,15 +130,15 @@ void plot_implicit(expr e1, expr e2, int index){
       r2 = eval(e2, x_, y_);
       
       if(fabs(r1-r2)<(2*options.x_zoom+options.y_zoom)/2){
-        wprintf(y,x,color, c);
+        wcprintf(y,x,color, c);
       }
     }
     update_ui();
   }
 
-  wprintf(0,0,BW, "           ");
-  wprintf(1+index, 0, BW, "%d", index); 
-  wprintf(1+index, 2, color, "%s = %s", e1.str, e2.str); 
+  wcprintf(0,0,BW, "           ");
+  wcprintf(1+index, 0, BW, "%d", index); 
+  wcprintf(1+index, 2, color, "%s = %s", e1.str, e2.str); 
 
   update_ui();
 }
@@ -155,23 +155,23 @@ void draw_axis(){
   int x_0 = w/2 - options.x_center/xz;
   int y_0 = h/2 + options.y_center/yz; 
 
-  for(y = 0; y<h; y++) wprintf(y, x_0, BW, "|");
+  for(y = 0; y<h; y++) wcprintf(y, x_0, BW, "|");
   update_ui();
    
-  for(x = 0; x<w; x++) wprintf(y_0, x, BW, "-");
+  for(x = 0; x<w; x++) wcprintf(y_0, x, BW, "-");
   update_ui();
    
   
   for(x = 0; x<w-14; x+=15){
     int y_ = y_0<0 ? 1 : y_0>=h-2 ? h-2 : y_0+1;
     
-    wprintf(y_, x, BW, xz>10||xz<0.001? "%.3e": "%.3f", options.x_center + options.x_zoom * (x-w/2));
+    wcprintf(y_, x, BW, xz>10||xz<0.001? "%.3e": "%.3f", options.x_center + options.x_zoom * (x-w/2));
   }
   update_ui();
 
   for(y = 0; y<h; y+=3){
     int x_ = x_0<0? 0 : x_0>=w-15? w-15 : x_0+1;
-    wprintf(y, x_, BW, yz > 10||yz<0.001? " %.3e" : " %.3f", options.y_center + options.y_zoom * (h/2-y)); 
+    wcprintf(y, x_, BW, yz > 10||yz<0.001? " %.3e" : " %.3f", options.y_center + options.y_zoom * (h/2-y)); 
   }
   update_ui();
 }

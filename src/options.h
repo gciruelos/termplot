@@ -12,6 +12,7 @@ struct{
 
   int quit;
 
+
 } options;
 
 void init_structs();

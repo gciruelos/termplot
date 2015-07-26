@@ -15,7 +15,7 @@ void clean_ui();
 
 /* INTERFACE FUNCTIONS */ 
 int input();
-void wprintf(int y, int x, unsigned int color, char * fmt, ...);
+void wcprintf(int y, int x, unsigned int color, char * fmt, ...);
 void update_cmd();
 
 
