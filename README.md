@@ -21,7 +21,7 @@ Termplot supports vim-like commands, so you can type
 
 And it will work. Termplot can also plot implicit functions, like
 
-    :implicit x^2+y^2 = 1
+    :plot x^2+y^2 = 1
 
 #Screenshots
 ![![Scren](https://raw.githubusercontent.com/gciruelos/termplot/master/info/screen1.png)](info/screen1.png "Screenshot")

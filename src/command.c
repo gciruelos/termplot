@@ -10,9 +10,8 @@ struct{
   char name[10];
   void (*func)(char * arg);
 } cmds[CMDS_NUM] = {{"nop", nothing},
-                    {"plot", add_function},
+                    {"plot", add_plot},
                     {"quit", quit},
-                    {"implicit", add_implicit},
                     {"q", quit}
                    };
 

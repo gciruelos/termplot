@@ -24,8 +24,7 @@ struct function{
 void replot_functions();
 void plot_function(expr e, int index);
 void plot_implicit(expr e1, expr e2, int index);
-void add_function(char * cmd);
-void add_implicit(char * cmd);
+void add_plot(char * cmd);
 
 void draw_axis();
 

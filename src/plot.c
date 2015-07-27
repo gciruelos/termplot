@@ -1,40 +1,16 @@
 #include "plot.h"
 
-void add_function(char * cmd){
-  struct function new;
-  new.f = parse(cmd);
-  /*new.g = y;*/
-
-  new.type = EXPLICIT; 
-  new.valid = 0;
-
-  if(new.f.size > 0){
-    new.valid = 1;
-    int i;
-    for(i = 0; i<MAX_FUNCTIONS; i++){
-      if(!functions[i].valid){
-        functions[i] = new;
-        break;
-      }
-    }
-  }
-}
-
-
-void add_implicit(char * cmd){
-
-  char * eq;
-  if(eq = strchr(cmd, '=')){
-
-    *eq = '\0';
+void add_plot(char * cmd){
+  
+  
+  if(strchr(cmd, '=') == NULL){
     struct function new;
     new.f = parse(cmd);
-    new.g = parse(eq+1);
-    new.type = IMPLICIT;
+    /*new.g = y;*/
+  
+    new.type = EXPLICIT; 
     new.valid = 0;
-    
-    *eq = '=';
-    
+  
     if(new.f.size > 0){
       new.valid = 1;
       int i;
@@ -42,6 +18,30 @@ void add_implicit(char * cmd){
         if(!functions[i].valid){
           functions[i] = new;
           break;
+        }
+      }
+    }
+  } else {
+    char * eq;
+    if(eq = strchr(cmd, '=')){
+  
+      *eq = '\0';
+      struct function new;
+      new.f = parse(cmd);
+      new.g = parse(eq+1);
+      new.type = IMPLICIT;
+      new.valid = 0;
+      
+      *eq = '=';
+      
+      if(new.f.size > 0){
+        new.valid = 1;
+        int i;
+        for(i = 0; i<MAX_FUNCTIONS; i++){
+          if(!functions[i].valid){
+            functions[i] = new;
+            break;
+          }
         }
       }
     }
