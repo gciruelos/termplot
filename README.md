@@ -26,3 +26,12 @@ And it will work. Termplot can also plot implicit functions, like
 #Screenshots
 ![![Scren](https://raw.githubusercontent.com/gciruelos/termplot/master/info/screen1.png)](info/screen1.png "Screenshot")
 
+#TODO
+
+* Zooming just in one axis
+* Deleting plots
+* Replacing plots
+* Write out to files
+* Read from commandline/stdin
+* Different plot styles?
+
