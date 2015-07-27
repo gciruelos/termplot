@@ -34,4 +34,5 @@ And it will work. Termplot can also plot implicit functions, like
 * Write out to files
 * Read from commandline/stdin
 * Different plot styles?
+* Less flicker
 
