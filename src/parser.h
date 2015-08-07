@@ -7,6 +7,7 @@
 #include <string.h>
 #include <math.h>
 
+#define CONSTS_NUM 2
 #define OPS_NUM 9
 #define FUNCS_NUM 10
 
@@ -31,8 +32,14 @@ struct func_s {
   char name[8];
 };
 
+struct const_s {
+  double n;
+  char name[8];
+};
+
 enum token_t{
   NUM,
+  CONST,
   VARX,
   VARY,
   OP,
@@ -46,6 +53,7 @@ enum token_t{
 typedef struct tok_t{
   union {
     double n;
+    struct const_s cst;
     struct op_s op;
     struct func_s func;
   } data;
