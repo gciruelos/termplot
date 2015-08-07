@@ -34,6 +34,13 @@ struct func_s funcs[FUNCS_NUM]={
   {log10, "log10"}
 };
 
+
+struct const_s consts[CONSTS_NUM]={
+  {M_E, "e"},
+  {M_PI, "pi"}
+};
+
+
 void assign(struct op_s * op, char opch){
   int i;
   for(i = 0; i<OPS_NUM; i++){
@@ -61,6 +68,22 @@ unsigned int next_token(const char *expr, token * res){
       strcpy(res->data.func.name, funcs[i].name);
 
       idx += strlen(funcs[i].name);
+      return idx;
+    }
+  }
+
+
+  /*look for constants*/
+  for(i = 0; i<CONSTS_NUM; i++){
+    if (strstr(expr, consts[i].name) == expr){
+      d_print(consts[i].name);
+
+      res->type = CONST;
+
+      res->data.n = consts[i].n;
+      strcpy(res->data.cst.name, consts[i].name);
+
+      idx += strlen(consts[i].name);
       return idx;
     }
   }
@@ -156,6 +179,7 @@ expr parse(const char * in){
     
     switch(tok->type){
       case NUM:
+      case CONST:
       case VARX:
       case VARY:
         queue[++queue_last] = tok;
@@ -231,7 +255,7 @@ double eval(const expr e, double x, double y){
   unsigned int i;
   for(i = 0; i<e.size; i++){
     token * t = e.parsed[i];
-    if (t->type == NUM){
+    if (t->type == NUM || t->type == CONST){
       stack[++stack_top] = t->data.n;
     } else if(t->type == VARX){
       stack[++stack_top] = x;
@@ -269,6 +293,7 @@ int check_expr(const expr e){
     token * t = e.parsed[i];
     switch(t->type){
       case NUM:
+      case CONST:
       case VARX:
       case VARY:
         stack++; break;
@@ -311,6 +336,8 @@ void delete_expr(expr * d){
 void prnt_token(token tok){
   if(tok.type == NUM){
     printf("{NUM %.2f}", tok.data.n);
+  } else if(tok.type == CONST){
+    printf("{CONST %s}", tok.data.cst.name);
   } else if(tok.type == OP){
     printf("{OP %c}", tok.data.op.op);
   } else if(tok.type == VARX){
