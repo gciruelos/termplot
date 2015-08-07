@@ -27,6 +27,8 @@
 *.i*86
 *.x86_64
 *.hex
+termplot
+testbin
 
 # Debug files
 *.dSYM/
