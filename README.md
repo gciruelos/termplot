@@ -36,3 +36,8 @@ And it will work. Termplot can also plot implicit functions, like
 * Different plot styles?
 * Less flicker
 
+#Contributors
+
+* [Yu-Jie Lin](https://github.com/livibetter)
+
+
