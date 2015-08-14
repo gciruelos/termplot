@@ -9,11 +9,11 @@ void quit(char * arg){
 struct{
   char name[10];
   void (*func)(char * arg);
-} cmds[CMDS_NUM] = {{"nop", nothing},
-                    {"plot", add_plot},
-                    {"quit", quit},
-                    {"q", quit}
-                   };
+} cmds[] = {{"nop", nothing},
+            {"plot", add_plot},
+            {"quit", quit},
+            {"q", quit}
+           };
 
 void run_command(){
   char * cmdptr = &command[1]; /*medio cabeza*/
