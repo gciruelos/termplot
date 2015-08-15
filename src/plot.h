@@ -28,6 +28,8 @@ void add_plot(char * cmd);
 
 void draw_axis();
 
+void delete_function(unsigned int i);
+
 void init_plotter();
 void clean_plotter();
 

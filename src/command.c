@@ -1,6 +1,25 @@
+#include <errno.h>
 #include "command.h"
 
 void nothing(char * arg){;}
+
+void delete_plot(char * arg){
+  long int i;
+  char * endptr;
+  errno = 0;
+  i = strtol(arg, &endptr, 10);
+  if (errno == 0 && arg != endptr) {
+    delete_function(i);
+  }
+}
+
+void clear_plotter(char * arg __attribute__((unused))){
+  clean_plotter();
+}
+
+void refresh_plotter(char * arg __attribute__((unused))){
+  replot_functions();
+}
 
 void quit(char * arg){
   options.quit = 1;
@@ -11,6 +30,9 @@ struct{
   void (*func)(char * arg);
 } cmds[] = {{"nop", nothing},
             {"plot", add_plot},
+            {"delete", delete_plot},
+            {"clear", clear_plotter},
+            {"refresh", refresh_plotter},
             {"quit", quit},
             {"q", quit}
            };
