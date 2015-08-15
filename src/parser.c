@@ -10,7 +10,7 @@ double _div(double a1, double a2){return a1/a2;}
 double _mod(double a1, double a2){return fmod(a1,a2);}
 
 
-struct op_s ops[OPS_NUM]={
+struct op_s ops[]={
   {_neg, 10, ASSOC_RIGHT, 1, '_'},
   {pow, 9, ASSOC_RIGHT, 0, '^'},
   {_mul, 8, ASSOC_LEFT, 0, '*'},
@@ -21,7 +21,7 @@ struct op_s ops[OPS_NUM]={
 };
 
 
-struct func_s funcs[FUNCS_NUM]={
+struct func_s funcs[]={
   {sin, "sin"},
   {cos, "cos"},
   {tan, "tan"},
@@ -35,7 +35,7 @@ struct func_s funcs[FUNCS_NUM]={
 };
 
 
-struct const_s consts[CONSTS_NUM]={
+struct const_s consts[]={
   {M_E, "e"},
   {M_PI, "pi"}
 };

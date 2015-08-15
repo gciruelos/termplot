@@ -7,9 +7,9 @@
 #include <string.h>
 #include <math.h>
 
-#define CONSTS_NUM 2
-#define OPS_NUM 9
-#define FUNCS_NUM 10
+#define CONSTS_NUM sizeof(consts)/sizeof(consts[0])
+#define OPS_NUM sizeof(ops)/sizeof(ops[0])
+#define FUNCS_NUM sizeof(funcs)/sizeof(funcs[0])
 
 #include "debug.h"
 
