@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wextra -Wall -pedantic -O2
+CFLAGS = -Wextra -Wall -Werror -std=c11 -pedantic -O2
 
 TARGETS = termplot.o options.o ui.o command.o plot.o parser.o debug.o 
 

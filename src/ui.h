@@ -2,20 +2,19 @@
 #define UI
 
 #include <ncurses.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "options.h"
 #include "command.h"
-
+#include "options.h"
 
 void init_ui();
 void clean_ui();
 
 
-/* INTERFACE FUNCTIONS */ 
+/* INTERFACE FUNCTIONS */
 int input();
-void wcprintf(int y, int x, unsigned int color, char * fmt, ...);
+void wcprintf(int y, int x, unsigned int color, char* fmt, ...);
 void update_cmd();
 
 
@@ -25,7 +24,7 @@ int w_getch();
 
 /* CURSES FUNCTIONS */
 #define BW 0
-WINDOW * win;
+WINDOW* win;
 bool curses_started;
 
 void start_ui();
