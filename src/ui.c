@@ -53,7 +53,6 @@ void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
   }
 }
 
-
 inline int input() {
   static double zoom_factor = 0.1;
   int ch = w_getch();
@@ -110,7 +109,6 @@ void init_ui() {
   }
 }
 
-
 void clean_ui() {
   int i;
 
@@ -139,131 +137,3 @@ inline void update_ui() {
   buffer_next = 0;
   finish_paint(0);
 }
-
-#ifndef INCL_TERMBOX
-/* CURSES FUNCTIONS */
-void start_ui() {
-  if (curses_started) {
-    refresh();
-  } else {
-    win = initscr();
-    start_color();
-    cbreak();
-    noecho();
-    intrflush(stdscr, false);
-    keypad(stdscr, true);
-    atexit(end_ui);
-    curses_started = true;
-  }
-
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 16; j++) {
-      init_pair(j * 16 + i, i, j); /* bg * 16 + fg */
-    }
-  }
-}
-
-void end_ui() {
-  if (curses_started && !isendwin()) {
-    delwin(win);
-    endwin();
-    refresh();
-  }
-}
-
-inline int w_getch() {
-  return getch();
-}
-
-inline void set_terminal_size() {
-  getmaxyx(stdscr, options.height, options.width);
-}
-
-inline void prepare_paint() {
-  curs_set(1);
-}
-
-inline void paint_string(const struct buffer_entry* b) {
-  int color = (b->fg_color == BW ? BW : (b->fg_color - 2) % 16 + 1);
-  attron(COLOR_PAIR(color));
-  mvaddstr(b->y, b->x, b->buf);
-  attroff(COLOR_PAIR(color));
-}
-
-inline void finish_paint(int is_cmd) {
-  curs_set(is_cmd ? 1 : 0);
-  if (is_cmd) {
-    clrtoeol();
-    move(options.height - 1, cursor);
-  }
-  refresh();
-}
-
-inline void term_clear() {
-  clear();
-}
-
-inline void term_refresh() {
-  refresh();
-}
-
-#else
-/* TERMBOX FUNCTIONS */
-void start_ui() {
-  tb_init();
-}
-
-void end_ui() {
-  tb_shutdown();
-}
-
-inline int w_getch() {
-  struct tb_event event;
-  while (TB_EVENT_KEY != tb_poll_event(&event)) {
-    if (event.type == TB_EVENT_RESIZE) {
-      options.height = event.h;
-      options.width = event.w;
-      tb_clear();
-      draw_axis();
-      replot_functions();
-    }
-  }
-  return event.ch ? event.ch : event.key;
-}
-
-inline void set_terminal_size() {
-  options.height = tb_height();
-  options.width = tb_width();
-}
-
-inline void prepare_paint() {
-}
-
-inline void paint_string(const struct buffer_entry* b) {
-  int x = b->x;
-  int y = b->y;
-  for (int i = 0; b->buf[i] != '\0'; i++) {
-    tb_change_cell(x, y, b->buf[i], b->fg_color, b->bg_color);
-    x++;
-  }
-}
-
-inline void finish_paint(int is_cmd) {
-  if (is_cmd) {
-    tb_set_cursor(cursor, options.height - 1);
-  } else {
-    tb_set_cursor(TB_HIDE_CURSOR, TB_HIDE_CURSOR);
-  }
-  tb_present();
-}
-
-inline void term_clear() {
-  tb_clear();
-}
-
-inline void term_refresh() {
-  tb_present();
-}
-
-#endif
-

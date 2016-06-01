@@ -1,10 +1,23 @@
 CC = gcc
-CFLAGS = -DINCL_TERMBOX -Wextra -Wall -Werror -std=c11 -pedantic -O2
-TARGETS = options.o ui.o command.o plot.o parser.o debug.o 
-LIBRARIES = -lm -lncurses -ltermbox
-TEST = false
+CFLAGS = -Wextra -Wall -Werror -std=c11 -pedantic -O2
+TARGETS = options.o ui.o ui_impl.o command.o plot.o parser.o debug.o 
+UI_IMPL = 
+LIBRARIES = -lm
+TERMBOX = true
+
+ifeq ($(TERMBOX), true)
+	CFLAGS+=-DINCL_TERMBOX
+	UI_IMPL=src/ui/ui_termbox.c
+	LIBRARIES+=-ltermbox
+else
+	UI_IMPL=src/ui/ui_ncurses.c
+	LIBRARIES+=-lncurses
+endif
 
 %.o: src/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+ui_impl.o: $(UI_IMPL)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 termplot.o: src/termplot.c
@@ -23,5 +36,5 @@ test: testbin
 	./testbin
 
 clean:
-	rm -f test.o $(TARGETS) debug.out termplot testbin
+	rm -f termplot.o test.o $(TARGETS) debug.out termplot testbin
 

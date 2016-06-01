@@ -121,7 +121,8 @@ void plot_implicit(expr e1, expr e2, int index) {
   int x, y;
   double x_, y_, r1, r2;
 
-  int color = index % 16 + 1;
+  // int color = index % 16 + 1;
+  int color = index + 2;
 
 
   wcprintf(0, 0, FG_WHITE, BG_BLACK, "plotting...");
