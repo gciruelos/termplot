@@ -4,8 +4,8 @@
  *  Terminal to Reals
  *  -----------------
  *
- *  x -> options.x_center + options.x_zoom * (x - width/2));
- *  y -> options.y_center + options.y_zoom * (height/2-y));
+ *  x -> options.x_center + options.x_zoom * (x - width / 2));
+ *  y -> options.y_center + options.y_zoom * (height / 2 - y));
  *
  *
  *  Reals to Terminal
@@ -20,24 +20,24 @@
 #define BUFFER_SIZE 1000
 #define MAX_LEN 300
 
-struct buffer_entry {
-  char * buf;
-  int x;
-  int y;
-  unsigned int color;
-}* print_buffer[BUFFER_SIZE];
+struct buffer_entry* print_buffer[BUFFER_SIZE];
 unsigned int buffer_next;
 
 inline void update_cmd() {
-  curs_set(1);
-  mvaddstr(options.height-1, 0, command);
-  clrtoeol();
-  move(options.height-1, cursor);
-  refresh();
+  prepare_paint();
+  struct buffer_entry b = {
+    .buf = command,
+    .x = 0,
+    .y = options.height-1,
+    .fg_color = FG_WHITE,
+    .bg_color = BG_BLACK
+  };
+  paint_string(&b);
+  finish_paint(1);
 }
 
-
-inline void wcprintf(int y, int x, unsigned int color, char* fmt, ...) {
+void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
+              char* fmt, ...) {
   if (IN_RANGE(x,y)) {
     struct buffer_entry* b = print_buffer[buffer_next++];
 
@@ -48,7 +48,8 @@ inline void wcprintf(int y, int x, unsigned int color, char* fmt, ...) {
 
     b->y = y;
     b->x = x;
-    b->color = color;
+    b->fg_color = fg_color;
+    b->bg_color = bg_color;
   }
 }
 
@@ -94,14 +95,8 @@ inline int input() {
 
 void init_ui() {
   start_ui();
-  int i, j;
-  for (i = 0; i < 16; i++) {
-    for (j = 0; j < 16; j++) {
-      init_pair(j * 16 + i, i, j); /* bg * 16 + fg */
-    }
-  }
 
-  for (i = 0; i < BUFFER_SIZE; i++) {
+  for (int i = 0; i < BUFFER_SIZE; i++) {
     print_buffer[i] = malloc(sizeof(struct buffer_entry));
     print_buffer[i]->buf = calloc(MAX_LEN, sizeof(char));
   }
@@ -110,7 +105,7 @@ void init_ui() {
 
   hist_last = -1;
   hist_first = 0;
-  for (i = 0; i < CMD_HIST; i++) {
+  for (int i = 0; i < CMD_HIST; i++) {
     command_history[i] = calloc(CMD_SIZE, sizeof(char));
   }
 }
@@ -132,38 +127,21 @@ void clean_ui() {
   end_ui();
 }
 
-
-
-
-/* INTERFACE FUNCTIONS */
-
-inline void set_terminal_size() {
-  getmaxyx(stdscr,options.height,options.width);
-}
-
 inline void update_ui() {
   unsigned int i;
-  struct buffer_entry * b;
+  struct buffer_entry* b;
 
-  curs_set(1);
+  prepare_paint();
   for (i = 0; i < buffer_next; i++) {
     b = print_buffer[i];
-    attron(COLOR_PAIR(b->color));
-    mvaddstr(b->y, b->x, b->buf);
-    attroff(COLOR_PAIR(b->color));
+    paint_string(b);
   }
   buffer_next = 0;
-  curs_set(0);
-  refresh();
+  finish_paint(0);
 }
 
-inline int w_getch() {
-  return getch();
-}
-
-
+#ifndef INCL_TERMBOX
 /* CURSES FUNCTIONS */
-
 void start_ui() {
   if (curses_started) {
     refresh();
@@ -177,8 +155,13 @@ void start_ui() {
     atexit(end_ui);
     curses_started = true;
   }
-}
 
+  for (int i = 0; i < 16; i++) {
+    for (int j = 0; j < 16; j++) {
+      init_pair(j * 16 + i, i, j); /* bg * 16 + fg */
+    }
+  }
+}
 
 void end_ui() {
   if (curses_started && !isendwin()) {
@@ -188,4 +171,99 @@ void end_ui() {
   }
 }
 
+inline int w_getch() {
+  return getch();
+}
+
+inline void set_terminal_size() {
+  getmaxyx(stdscr, options.height, options.width);
+}
+
+inline void prepare_paint() {
+  curs_set(1);
+}
+
+inline void paint_string(const struct buffer_entry* b) {
+  int color = (b->fg_color == BW ? BW : (b->fg_color - 2) % 16 + 1);
+  attron(COLOR_PAIR(color));
+  mvaddstr(b->y, b->x, b->buf);
+  attroff(COLOR_PAIR(color));
+}
+
+inline void finish_paint(int is_cmd) {
+  curs_set(is_cmd ? 1 : 0);
+  if (is_cmd) {
+    clrtoeol();
+    move(options.height - 1, cursor);
+  }
+  refresh();
+}
+
+inline void term_clear() {
+  clear();
+}
+
+inline void term_refresh() {
+  refresh();
+}
+
+#else
+/* TERMBOX FUNCTIONS */
+void start_ui() {
+  tb_init();
+}
+
+void end_ui() {
+  tb_shutdown();
+}
+
+inline int w_getch() {
+  struct tb_event event;
+  while (TB_EVENT_KEY != tb_poll_event(&event)) {
+    if (event.type == TB_EVENT_RESIZE) {
+      options.height = event.h;
+      options.width = event.w;
+      tb_clear();
+      draw_axis();
+      replot_functions();
+    }
+  }
+  return event.ch ? event.ch : event.key;
+}
+
+inline void set_terminal_size() {
+  options.height = tb_height();
+  options.width = tb_width();
+}
+
+inline void prepare_paint() {
+}
+
+inline void paint_string(const struct buffer_entry* b) {
+  int x = b->x;
+  int y = b->y;
+  for (int i = 0; b->buf[i] != '\0'; i++) {
+    tb_change_cell(x, y, b->buf[i], b->fg_color, b->bg_color);
+    x++;
+  }
+}
+
+inline void finish_paint(int is_cmd) {
+  if (is_cmd) {
+    tb_set_cursor(cursor, options.height - 1);
+  } else {
+    tb_set_cursor(TB_HIDE_CURSOR, TB_HIDE_CURSOR);
+  }
+  tb_present();
+}
+
+inline void term_clear() {
+  tb_clear();
+}
+
+inline void term_refresh() {
+  tb_present();
+}
+
+#endif
 

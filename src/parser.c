@@ -248,7 +248,9 @@ expr parse(const char* in) {
   res.size = queue_last + 1;
   res.str = eq;
 
-  (void) parse_error;
+  if (parse_error) {
+    d_print("Parse error: %s\n", in); 
+  }
 
   if (check_expr(res) != 0) {
     delete_expr(&res);

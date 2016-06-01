@@ -33,8 +33,6 @@ void run_command() {
   cmds[cmd].func(args);
 }
 
-
-
 void input_command() {
   int ch;
   unsigned int i, current = hist_last + 1;
@@ -48,7 +46,7 @@ void input_command() {
   cursor = 1;
   update_cmd();
 
-  while ((ch = w_getch()) != 10) {
+  while ((ch = w_getch()) != ENTER) {
     if (ch == 127) { /* backspace */
       i = cursor - 1;
       while (command[i]) {
@@ -58,25 +56,27 @@ void input_command() {
       cursor--;
     } else if (ch == KEY_DC) { /* delete */
       i = cursor;
-      while(command[i]) {
+      while (command[i]) {
         command[i] = command[i + 1];
         i++;
       }
     } else if (ch == KEY_UP) {
-      if(current != hist_first) {
-        current = (current-1)%CMD_HIST;
+      if (current != hist_first) {
+        current = (current - 1) % CMD_HIST;
         strcpy(command, command_history[current]);
         cursor = strlen(command);
       }
     } else if (ch == KEY_DOWN) {
-      if(current < hist_last) {
+      if (current < hist_last) {
         current = (current + 1) % CMD_HIST;
         strcpy(command, command_history[current]);
         cursor = strlen(command);
       } else {
         command[1] = '\0';
         cursor = 1;
-        if(current == hist_last) current = (current+1)%CMD_HIST;
+        if (current == hist_last) {
+          current = (current + 1) % CMD_HIST;
+        }
       }
     } else if (ch == KEY_LEFT) {
       cursor--;
@@ -104,5 +104,4 @@ void input_command() {
     run_command();
   }
 }
-
 

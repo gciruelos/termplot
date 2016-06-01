@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
   int x;
   while (!options.quit) {
-    clear();
+    term_clear();
     set_terminal_size();
     draw_axis();
     replot_functions();
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     if (x == -1) {
       break;
     }
-    refresh();
+    term_refresh();
   }
 
   clean_plotter();

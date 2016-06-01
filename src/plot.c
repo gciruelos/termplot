@@ -74,10 +74,10 @@ void plot_function(expr e, int index) {
 
   // double dx_zoom = options.y_zoom/options.x_zoom;
 
-  int color = index % 16 + 1;
+  // int color = index % 16 + 1;
+  int color = index + 2;
 
-
-  wcprintf(0, 0, BW, "plotting...");
+  wcprintf(0, 0, FG_WHITE, BG_BLACK, "plotting...");
   update_ui();
 
   for (x = -1; x < width; x++) {
@@ -88,14 +88,14 @@ void plot_function(expr e, int index) {
 
     if (x >= 0 &&
         ((y >= 0 && y < height) || (last_y >= 0 && last_y < height))) {
-      wcprintf(y, x, color, c);
+      wcprintf(y, x, color, BG_BLACK, c);
       if (y > last_y + 1) {
         for (yi = MAX(last_y+1,0); yi < y && yi<height; yi++) {
-          wcprintf(yi, x, color, c);
+          wcprintf(yi, x, color, BG_BLACK, c);
         }
       } else if (y < last_y - 1) {
         for (yi = MAX(y + 1, 0); yi < last_y && yi < height; yi++) {
-          wcprintf(yi, x, color, c);
+          wcprintf(yi, x, color, BG_BLACK, c);
         }
       }
       update_ui();
@@ -104,9 +104,9 @@ void plot_function(expr e, int index) {
     last_y = y;
   }
 
-  wcprintf(0, 0, BW, "           ");
-  wcprintf(1 + index, 0, BW, "%d", index);
-  wcprintf(1 + index, 2, color, "f(x) = %s", e.str);
+  wcprintf(0, 0, FG_WHITE, BG_BLACK, "           ");
+  wcprintf(1 + index, 0, FG_WHITE, BG_BLACK, "%d", index);
+  wcprintf(1 + index, 2, color, BG_BLACK, "f(x) = %s", e.str);
 
   update_ui();
 }
@@ -124,7 +124,7 @@ void plot_implicit(expr e1, expr e2, int index) {
   int color = index % 16 + 1;
 
 
-  wcprintf(0, 0, BW, "plotting...");
+  wcprintf(0, 0, FG_WHITE, BG_BLACK, "plotting...");
   update_ui();
 
   for (x = 0; x < width; x++) {
@@ -136,15 +136,15 @@ void plot_implicit(expr e1, expr e2, int index) {
       r2 = eval(e2, x_, y_);
 
       if (fabs(r1 - r2) < (2 * options.x_zoom+options.y_zoom) / 2) {
-        wcprintf(y, x, color, c);
+        wcprintf(y, x, color, BG_BLACK, c);
       }
     }
     update_ui();
   }
 
-  wcprintf(0, 0, BW, "           ");
-  wcprintf(1 + index, 0, BW, "%d", index);
-  wcprintf(1 + index, 2, color, "%s = %s", e1.str, e2.str);
+  wcprintf(0, 0, FG_WHITE, BG_BLACK, "           ");
+  wcprintf(1 + index, 0, FG_WHITE, BG_BLACK, "%d", index);
+  wcprintf(1 + index, 2, color, BG_BLACK, "%s = %s", e1.str, e2.str);
 
   update_ui();
 }
@@ -162,12 +162,12 @@ void draw_axis() {
   int y_0 = h / 2 + options.y_center / yz;
 
   for (y = 0; y<h; y++) {
-    wcprintf(y, x_0, BW, "|");
+    wcprintf(y, x_0, FG_WHITE, BG_BLACK, "|");
   }
   update_ui();
 
   for (x = 0; x<w; x++) {
-    wcprintf(y_0, x, BW, "-");
+    wcprintf(y_0, x, FG_WHITE, BG_BLACK, "-");
   }
   update_ui();
 
@@ -177,7 +177,7 @@ void draw_axis() {
 
     wcprintf(y_,
              x,
-             BW,
+             FG_WHITE, BG_BLACK,
              xz > 10 || xz < 0.001 ? "%.3e" : "%.3f",
              options.x_center + options.x_zoom * (x - w / 2));
   }
@@ -187,7 +187,7 @@ void draw_axis() {
     int x_ = x_0 < 0 ? 0 : x_0 >= w - 15 ? w - 15 : x_0 + 1;
     wcprintf(y,
              x_,
-             BW,
+             FG_WHITE, BG_BLACK,
              yz > 10 || yz < 0.001 ? " %.3e" : " %.3f",
              options.y_center + options.y_zoom * (h / 2 - y));
   }

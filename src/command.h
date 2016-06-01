@@ -19,4 +19,3 @@ unsigned int cursor;
 
 void run_command();
 void input_command();
-
