@@ -170,7 +170,18 @@ void draw_axis(void) {
     wcprintf(y_0, x, FG_WHITE, BG_BLACK, "-");
   }
   update_ui();
+}
 
+void draw_axis_numbers(void) {
+  int h = options.height;
+  int w = options.width;
+
+  double xz = options.x_zoom;
+  double yz = options.y_zoom;
+
+  int y, x;
+  int x_0 = w / 2 - options.x_center / xz;
+  int y_0 = h / 2 + options.y_center / yz;
 
   for (x = 0; x < w - 14; x += 15) {
     int y_ = y_0 < 0 ? 1 : y_0 >= h - 2 ? h - 2 : y_0 + 1;

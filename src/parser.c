@@ -273,9 +273,8 @@ double eval(const expr e, double x, double y) {
   double stack[100];
   int stack_top = -1;
 
-  unsigned int i;
-  for (i = 0; i < e.size; i++) {
-    token * t = e.parsed[i];
+  for (unsigned int i = 0; i < e.size; i++) {
+    token* t = e.parsed[i];
     if (t->type == NUM || t->type == CONST) {
       stack[++stack_top] = t->data.n;
     } else if (t->type == VARX) {

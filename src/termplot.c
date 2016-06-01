@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
     set_terminal_size();
     draw_axis();
     replot_functions();
+    draw_axis_numbers();
 
     x = input();
     if (x == -1) {

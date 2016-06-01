@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "debug.h"
@@ -19,7 +20,6 @@
   #define M_E 2.79
 #endif
 
-enum {ASSOC_NONE=0, ASSOC_LEFT, ASSOC_RIGHT};
 
 struct op_s {
   union {
@@ -27,8 +27,12 @@ struct op_s {
     double (*un)(double a);
   } function;
   unsigned char prec;
-  unsigned char assoc;
-  unsigned char unary;
+  enum {
+    ASSOC_NONE = 0,
+    ASSOC_LEFT,
+    ASSOC_RIGHT
+  } assoc;
+  bool unary;
   char op;
 };
 
@@ -67,8 +71,8 @@ typedef struct tok_t {
 } token;
 
 typedef struct expr_t {
-  token ** parsed;
-  char * str;
+  token** parsed;
+  char* str;
   unsigned int size;
 } expr;
 
