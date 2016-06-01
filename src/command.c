@@ -13,8 +13,8 @@ struct {
   {"q", quit}
 };
 
-void run_command() {
-  char * cmdptr = &command[1]; /*medio cabeza*/
+void run_command(void) {
+  char* cmdptr = &command[1]; /* Medio cabeza. */
   int cmd = 0;
   for (unsigned int i = 0; i < CMDS_NUM; i++) {
     if (strstr(cmdptr, cmds[i].name) != NULL) {
@@ -33,7 +33,7 @@ void run_command() {
   cmds[cmd].func(args);
 }
 
-void input_command() {
+void input_command(void) {
   int ch;
   unsigned int i, current = hist_last + 1;
 

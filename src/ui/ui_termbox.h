@@ -17,14 +17,14 @@
 #define FG_WHITE TB_WHITE
 #define BG_BLACK TB_DEFAULT
 
-void start_ui();
-void end_ui();
-int w_getch();
-void set_terminal_size();
-void prepare_paint();
+void start_ui(void);
+void end_ui(void);
+int w_getch(void);
+void set_terminal_size(void);
+void prepare_paint(void);
 void paint_string(struct buffer_entry* b);
-void finish_paint();
-void term_clear();
-void term_refresh();
+void finish_paint(int cmd_length);
+void term_clear(void);
+void term_refresh(void);
 
 #endif

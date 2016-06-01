@@ -4,5 +4,5 @@
 
 int debug_enabled;
 
-void start_debug();
+void start_debug(void);
 void d_print(const char * format, ...);

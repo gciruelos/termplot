@@ -23,17 +23,17 @@
 struct buffer_entry* print_buffer[BUFFER_SIZE];
 unsigned int buffer_next;
 
-inline void update_cmd() {
+inline void update_cmd(void) {
   prepare_paint();
   struct buffer_entry b = {
     .buf = command,
     .x = 0,
-    .y = options.height-1,
+    .y = options.height - 1,
     .fg_color = FG_WHITE,
     .bg_color = BG_BLACK
   };
   paint_string(&b);
-  finish_paint(1);
+  finish_paint(strlen(command));
 }
 
 void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
@@ -53,7 +53,7 @@ void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
   }
 }
 
-inline int input() {
+inline int input(void) {
   static double zoom_factor = 0.1;
   int ch = w_getch();
 
@@ -92,7 +92,7 @@ inline int input() {
   return 0;  /* Everyting went fine. */
 }
 
-void init_ui() {
+void init_ui(void) {
   start_ui();
 
   for (int i = 0; i < BUFFER_SIZE; i++) {
@@ -109,7 +109,7 @@ void init_ui() {
   }
 }
 
-void clean_ui() {
+void clean_ui(void) {
   int i;
 
   for (i = 0; i < CMD_HIST; i++) {
@@ -125,7 +125,7 @@ void clean_ui() {
   end_ui();
 }
 
-inline void update_ui() {
+inline void update_ui(void) {
   unsigned int i;
   struct buffer_entry* b;
 

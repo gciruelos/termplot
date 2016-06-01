@@ -17,5 +17,5 @@ unsigned int hist_last, hist_first;
 char command[CMD_SIZE];
 unsigned int cursor;
 
-void run_command();
-void input_command();
+void run_command(void);
+void input_command(void);

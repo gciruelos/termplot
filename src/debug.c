@@ -2,7 +2,7 @@
 
 FILE * dbg;
 
-void start_debug() {
+void start_debug(void) {
   if (debug_enabled) {
     dbg = fopen("debug.out", "w");
     if (dbg == NULL) {

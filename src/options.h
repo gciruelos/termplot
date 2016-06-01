@@ -13,6 +13,6 @@ struct {
   int quit;
 } options;
 
-void init_structs();
+void init_structs(void);
 
 #endif

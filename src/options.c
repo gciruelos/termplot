@@ -1,6 +1,6 @@
 #include "options.h"
 
-void init_structs() {
+void init_structs(void) {
   options.x_center = 0.0;
   options.y_center = 0.0;
   options.x_zoom = 0.1;

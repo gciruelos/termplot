@@ -58,12 +58,12 @@ void assign(struct op_s* op, char opch) {
 }
 
 
-unsigned int next_token(const char* expr, token* res) {
+unsigned int next_token(const char* term, token* res) {
   unsigned int idx = 0, i;
 
   /* Look for functions. */
   for(i = 0; i < FUNCS_NUM; i++) {
-    if (strstr(expr, funcs[i].name) == expr) {
+    if (strstr(term, funcs[i].name) == term) {
       d_print(funcs[i].name);
 
       res->type = FUNC;
@@ -79,7 +79,7 @@ unsigned int next_token(const char* expr, token* res) {
 
   /* Look for constants. */
   for (i = 0; i < CONSTS_NUM; i++) {
-    if (strstr(expr, consts[i].name) == expr) {
+    if (strstr(term, consts[i].name) == term) {
       d_print(consts[i].name);
 
       res->type = CONST;
@@ -95,29 +95,29 @@ unsigned int next_token(const char* expr, token* res) {
 
   /* Look for operators. */
   for (i = 0; i < OPS_NUM; i++) {
-    if (*expr == ops[i].op) {
+    if (*term == ops[i].op) {
       res->type = OP;
-      assign(&(res->data.op), *expr);
+      assign(&(res->data.op), *term);
       idx++;
       return idx;
     }
   }
 
 
-  if (isdigit(expr[idx])) {
+  if (isdigit(term[idx])) {
     res->type = NUM;
     res->data.n = 0;
-    while (isdigit(expr[idx])) {
+    while (isdigit(term[idx])) {
       res->data.n *= 10;
-      res->data.n += (int) (expr[idx] - '0');
+      res->data.n += (int) (term[idx] - '0');
       idx++;
     }
 
-    if (expr[idx] == '.') {
+    if (term[idx] == '.') {
       idx++;
       double d = 10.0;
-      while (isdigit(expr[idx])) {
-        res->data.n += ((int) (expr[idx] - '0')) / d;
+      while (isdigit(term[idx])) {
+        res->data.n += ((int) (term[idx] - '0')) / d;
         d *= 10.0;
         idx++;
       }
@@ -126,7 +126,7 @@ unsigned int next_token(const char* expr, token* res) {
   }
 
 
-  switch (*expr) {
+  switch (*term) {
     case '(':
       res->type = PARL;
       idx++;
@@ -153,23 +153,23 @@ unsigned int next_token(const char* expr, token* res) {
 
 
 expr parse(const char* in) {
-  char * eq = malloc(sizeof(char)*100);
+  char * eq = malloc(sizeof(char) * 100);
   int next = 0;
-  token ** queue = malloc(sizeof(token*)*100);
+  token ** queue = malloc(sizeof(token*) * 100);
   int queue_last = -1;
   token * stack[100];
   int stack_top = -1;
 
   int parse_error = 0;
 
-  token * last_tok = NULL;
+  enum token_t last_tok_type = _NONE;
 
   unsigned int forward = 0;
 
   struct op_s o1, o2;
 
   while (*in != '\0') {
-    token * tok = malloc(sizeof(token));
+    token* tok = malloc(sizeof(token));
 
     forward = next_token(in, tok);
     while(forward) {
@@ -179,11 +179,17 @@ expr parse(const char* in) {
 
     /* Check if - is unary or binary. */
     if (tok->type == OP && tok->data.op.op == '-') {
-      if (last_tok == NULL || last_tok->type == PARL || last_tok->type == OP) {
-        assign(&(tok->data.op), '_');
+      switch (last_tok_type) {
+        case _NONE:
+        case PARL:
+        case OP:
+          assign(&(tok->data.op), '_');
+        default:
+          break;
       }
     }
 
+    last_tok_type = tok->type;
     switch (tok->type) {
       case NUM:
       case CONST:
@@ -197,6 +203,7 @@ expr parse(const char* in) {
         break;  /* Function token. */
 
       case SEP:
+        free(tok);
         break; /* Function argument separator. */
 
       case OP:
@@ -206,7 +213,10 @@ expr parse(const char* in) {
           if ((o1.assoc == ASSOC_LEFT && o1.prec <= o2.prec) ||
               (o1.assoc == ASSOC_RIGHT && o1.prec < o2.prec)) {
             queue[++queue_last] = stack[stack_top--];
-          } else break;
+          } else {
+            free(tok);
+            break;
+          }
         }
         stack[++stack_top] = tok;
         break;
@@ -225,16 +235,16 @@ expr parse(const char* in) {
           free(stack[stack_top]);
           stack_top--;
         }
-
         if (stack_top>=0 && stack[stack_top]->type == FUNC) {
           queue[++queue_last] = stack[stack_top--];
         }
+        free(tok);
         break;
-      case _ERR:
+      default:
         parse_error = 1;
-
+        free(tok);
+        break;
     }
-    last_tok = tok;
   }
 
   while (stack_top >= 0) {
@@ -296,11 +306,11 @@ double eval(const expr e, double x, double y) {
 
 
 int check_expr(const expr e) {
-  unsigned int stack = 0, i;
+  unsigned int stack = 0;
 
   int expr_error = 0;
 
-  for (i = 0; i < e.size; i++) {
+  for (unsigned int i = 0; i < e.size; i++) {
     token * t = e.parsed[i];
     switch (t->type) {
       case NUM:
@@ -324,8 +334,7 @@ int check_expr(const expr e) {
 
 void delete_expr(expr* d) {
   if (d->parsed) {
-    unsigned int i;
-    for (i = 0; i < d->size; i++) {
+    for (unsigned int i = 0; i < d->size; i++) {
       free(d->parsed[i]);
       d->parsed[i] = NULL;
     }

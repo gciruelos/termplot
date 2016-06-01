@@ -13,12 +13,12 @@
   #include "ui/ui_termbox.h"
 #endif
 
-void init_ui();
-void clean_ui();
-int input();
+void init_ui(void);
+void clean_ui(void);
+int input(void);
 void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
               char* fmt, ...);
-void update_cmd();
-void update_ui();
+void update_cmd(void);
+void update_ui(void);
 
 #endif

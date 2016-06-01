@@ -1,14 +1,14 @@
 #include "ui_termbox.h"
 
-void start_ui() {
+void start_ui(void) {
   tb_init();
 }
 
-void end_ui() {
+void end_ui(void) {
   tb_shutdown();
 }
 
-inline int w_getch() {
+inline int w_getch(void) {
   struct tb_event event;
   while (TB_EVENT_KEY != tb_poll_event(&event)) {
     if (event.type == TB_EVENT_RESIZE) {
@@ -22,12 +22,12 @@ inline int w_getch() {
   return event.ch ? event.ch : event.key;
 }
 
-inline void set_terminal_size() {
+inline void set_terminal_size(void) {
   options.height = tb_height();
   options.width = tb_width();
 }
 
-inline void prepare_paint() {
+inline void prepare_paint(void) {
 }
 
 inline void paint_string(struct buffer_entry* b) {
@@ -39,8 +39,19 @@ inline void paint_string(struct buffer_entry* b) {
   }
 }
 
-inline void finish_paint(int is_cmd) {
-  if (is_cmd) {
+inline void finish_paint(int cmd_length) {
+  if (cmd_length) {
+    struct buffer_entry b = {
+      .x = cmd_length,
+      .y = options.height - 1,
+      .buf = " ",
+      .fg_color = FG_WHITE,
+      .bg_color = BG_BLACK
+    };
+    for (int i = 0; i < options.width - 1 - cmd_length; i++) {
+      paint_string(&b);
+      b.x++;
+    }
     tb_set_cursor(cursor, options.height - 1);
   } else {
     tb_set_cursor(TB_HIDE_CURSOR, TB_HIDE_CURSOR);
@@ -48,10 +59,10 @@ inline void finish_paint(int is_cmd) {
   tb_present();
 }
 
-inline void term_clear() {
+inline void term_clear(void) {
   tb_clear();
 }
 
-inline void term_refresh() {
+inline void term_refresh(void) {
   tb_present();
 }

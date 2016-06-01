@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wextra -Wall -Werror -std=c11 -pedantic -O2
+WARNINGS = -Wall -Wextra -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual
+CFLAGS = $(WARNINGS) -Werror -std=c11 -pedantic -O2 -ggdb
 TARGETS = options.o ui.o ui_impl.o command.o plot.o parser.o debug.o 
 UI_IMPL = 
 LIBRARIES = -lm

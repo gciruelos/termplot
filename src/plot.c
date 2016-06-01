@@ -49,7 +49,7 @@ void add_plot(char* cmd) {
 }
 
 
-void replot_functions() {
+void replot_functions(void) {
   int i;
   for (i = 0; i < MAX_FUNCTIONS; i++) {
     if (functions[i].valid) {
@@ -124,7 +124,6 @@ void plot_implicit(expr e1, expr e2, int index) {
   // int color = index % 16 + 1;
   int color = index + 2;
 
-
   wcprintf(0, 0, FG_WHITE, BG_BLACK, "plotting...");
   update_ui();
 
@@ -151,7 +150,7 @@ void plot_implicit(expr e1, expr e2, int index) {
 }
 
 
-void draw_axis() {
+void draw_axis(void) {
   int h = options.height;
   int w = options.width;
 
@@ -196,6 +195,13 @@ void draw_axis() {
 }
 
 void delete_function(unsigned int i) {
+  d_print("Deleting funcion %d...", i);
+  d_print("State of the function array: \n");
+  for (int j = 0; j < MAX_FUNCTIONS; j++) {
+    char* fexpr = functions[j].f.str;
+    d_print("\t(%d) %s  -> %d.\n", j, fexpr ? fexpr : "???", functions[j].valid);
+  }
+    
   if (i < MAX_FUNCTIONS) {
     if (functions[i].valid) {
       delete_expr(&(functions[i].f));
@@ -204,14 +210,14 @@ void delete_function(unsigned int i) {
   }
 }
 
-void init_plotter() {
+void init_plotter(void) {
   unsigned int i;
   for (i = 0; i < MAX_FUNCTIONS; i++) {
     functions[i].valid = 0;
   }
 }
 
-void clean_plotter() {
+void clean_plotter(void) {
   unsigned int i;
   for (i = 0; i < MAX_FUNCTIONS; i++) {
     delete_function(i);

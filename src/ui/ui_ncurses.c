@@ -1,4 +1,6 @@
-void start_ui() {
+#include "ui_ncurses.h"
+
+void start_ui(void) {
   if (curses_started) {
     refresh();
   } else {
@@ -19,7 +21,7 @@ void start_ui() {
   }
 }
 
-void end_ui() {
+void end_ui(void) {
   if (curses_started && !isendwin()) {
     delwin(win);
     endwin();
@@ -27,15 +29,15 @@ void end_ui() {
   }
 }
 
-inline int w_getch() {
+inline int w_getch(void) {
   return getch();
 }
 
-inline void set_terminal_size() {
+inline void set_terminal_size(void) {
   getmaxyx(stdscr, options.height, options.width);
 }
 
-inline void prepare_paint() {
+inline void prepare_paint(void) {
   curs_set(1);
 }
 
@@ -46,19 +48,19 @@ inline void paint_string(struct buffer_entry* b) {
   attroff(COLOR_PAIR(color));
 }
 
-inline void finish_paint(int is_cmd) {
-  curs_set(is_cmd ? 1 : 0);
-  if (is_cmd) {
+inline void finish_paint(int cmd_length) {
+  curs_set(cmd_length ? 1 : 0);
+  if (cmd_length) {
     clrtoeol();
     move(options.height - 1, cursor);
   }
   refresh();
 }
 
-inline void term_clear() {
+inline void term_clear(void) {
   clear();
 }
 
-inline void term_refresh() {
+inline void term_refresh(void) {
   refresh();
 }
