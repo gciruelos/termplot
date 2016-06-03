@@ -153,11 +153,11 @@ unsigned int next_token(const char* term, token* res) {
 
 
 expr parse(const char* in) {
-  char * eq = malloc(sizeof(char) * 100);
+  char* eq = malloc(sizeof(char) * 100);
   int next = 0;
-  token ** queue = malloc(sizeof(token*) * 100);
+  token** queue = malloc(sizeof(token*) * 100);
   int queue_last = -1;
-  token * stack[100];
+  token* stack[100];
   int stack_top = -1;
 
   int parse_error = 0;
@@ -214,7 +214,6 @@ expr parse(const char* in) {
               (o1.assoc == ASSOC_RIGHT && o1.prec < o2.prec)) {
             queue[++queue_last] = stack[stack_top--];
           } else {
-            free(tok);
             break;
           }
         }
@@ -332,14 +331,14 @@ int check_expr(const expr e) {
 }
 
 void delete_expr(expr* d) {
-  if (d->parsed) {
-    for (unsigned int i = 0; i < d->size; i++) {
+  for (unsigned int i = 0; i < d->size; i++) {
+    if (d->parsed[i]) {
       free(d->parsed[i]);
       d->parsed[i] = NULL;
     }
-    free(d->parsed);
-    d->parsed = NULL;
   }
+  free(d->parsed);
+  d->parsed = NULL;
   if (d->str) {
     free(d->str);
     d->str = NULL;
@@ -348,7 +347,7 @@ void delete_expr(expr* d) {
 }
 
 
-void prnt_token(token tok) {
+void debug_print_token(token tok) {
   if (tok.type == NUM) {
     printf("{NUM %.2f}", tok.data.n);
   } else if (tok.type == CONST) {
@@ -371,21 +370,12 @@ void prnt_token(token tok) {
 }
 
 
-void print_caca(token** s, int sz) {
+void debug_print(token** s, int sz) {
   int j;
+  printf("(size = %d)", sz);
   for (j = 0; j < sz; j++) {
-    printf("#");
-    prnt_token(*s[j]);
+    printf(" #");
+    debug_print_token(*s[j]);
   }
   printf("\n");
 }
-/*
-   int main(){
-   char e[] = "x^2";
-   expr a = parse(e);
-   print_caca(a.parsed, a.size);
-   printf("%f\n", eval(a, 1.2));
-   delete_expr(a);
-   return 0;
-   }
-   */

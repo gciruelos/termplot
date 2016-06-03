@@ -30,6 +30,7 @@ test.o: test/test.c
 termplot: $(TARGETS) termplot.o
 	$(CC) $(LIBRARIES) $(TARGETS) termplot.o -o $@
 
+testbin:
 testbin: $(TARGETS) test.o
 	$(CC) $(LIBRARIES) $(TARGETS) test.o -o $@
 

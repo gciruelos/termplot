@@ -47,6 +47,7 @@ struct const_s {
 };
 
 enum token_t {
+  _ERR=0,
   NUM,
   CONST,
   VARX,
@@ -56,7 +57,6 @@ enum token_t {
   PARR,
   FUNC,
   SEP,
-  _ERR,
   _NONE
 };
 
@@ -80,5 +80,8 @@ int check_expr(const expr e);
 expr parse(const char* in);
 double eval(const expr e, double x, double y);
 void delete_expr(expr*  d);
+
+void debug_print(token** s, int sz);
+void debug_print_token(token tok);
 
 #endif
