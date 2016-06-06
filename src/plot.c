@@ -1,7 +1,7 @@
 #include "plot.h"
 
-#define MAX(x,y) (x)>(y)?(x):(y)
-#define MIN(x,y) (x)<(y)?(x):(y)
+#define MAX(x,y) ((x)>(y)?(x):(y))
+#define MIN(x,y) ((x)<(y)?(x):(y))
 
 void add_plot(char* cmd) {
   if (strchr(cmd, '=') == NULL) {
@@ -63,7 +63,7 @@ void replot_functions(void) {
 }
 
 void plot_function(expr e, int index) {
-  static char c[1] = "#";
+  static char c[1] = "o";
 
   int height = options.height;
   int width = options.width;
@@ -90,7 +90,7 @@ void plot_function(expr e, int index) {
         ((y >= 0 && y < height) || (last_y >= 0 && last_y < height))) {
       wcprintf(y, x, color, BG_BLACK, c);
       if (y > last_y + 1) {
-        for (yi = MAX(last_y+1,0); yi < y && yi<height; yi++) {
+        for (yi = MAX(last_y + 1,0); yi < y && yi<height; yi++) {
           wcprintf(yi, x, color, BG_BLACK, c);
         }
       } else if (y < last_y - 1) {
@@ -111,16 +111,57 @@ void plot_function(expr e, int index) {
   update_ui();
 }
 
+double test_interval(const expr* e1, const expr* e2, 
+    double x1, double x2, double y1, double y2, double* x_min, double* y_min) {
+
+  *x_min = x1;
+  *y_min = y1;
+  double min_diff = fabs(eval(*e1, x1, y1) - eval(*e2, x1, y1));
+
+  for (int i = 0; i < 50; i++) {
+    double x_rand = ((double) rand()) / RAND_MAX;
+    double y_rand = ((double) rand()) / RAND_MAX;
+
+    double x = x1 + (x2 - x1) * x_rand;
+    double y = y1 + (y2 - y1) * y_rand;
+    double diff = fabs(eval(*e1, x, y) - eval(*e2, x, y));
+    if (diff < min_diff) {
+      min_diff = diff;
+      *x_min = x;
+      *y_min = y;
+    }
+  }
+  return min_diff;
+}
+
+bool cut(const expr* e1, const expr* e2,
+    double x1, double x2, double y1, double y2) {
+  double zoom = (2.0 * options.x_zoom + options.y_zoom) / 2.0;
+  double x, y;
+  double min_diff = test_interval(e1, e2, x1, x2, y1, y2, &x, &y);
+
+  if (min_diff < zoom / 4.0) {
+    return true;
+  } else if (fabs(x1 - x2) < 0.01 ||
+             fabs(y1 - y2) < 0.01) {
+    return false;
+  } else if (min_diff < zoom) {
+    double delta_x = MIN(fabs(x - x1), fabs(x - x2));
+    double delta_y = MIN(fabs(y - y1), fabs(y - y2));
+    return cut(e1, e2, x - delta_x, x + delta_x, y - delta_y, y + delta_y);
+  } else {
+    return false;
+  }
+}
+
 void plot_implicit(expr e1, expr e2, int index) {
 
-  static char c[1] = "#";
+  static char c[1] = "o";
 
   int height = options.height;
   int width = options.width;
 
   int x, y;
-  double x_, y_, r1, r2;
-
   // int color = index % 16 + 1;
   int color = index + 2;
 
@@ -129,13 +170,11 @@ void plot_implicit(expr e1, expr e2, int index) {
 
   for (x = 0; x < width; x++) {
     for (y = 0; y< height; y++) {
-      x_ = options.x_center + options.x_zoom * (x - width / 2);
-      y_ = options.y_center + options.y_zoom * (height / 2 - y);
-
-      r1 = eval(e1, x_, y_);
-      r2 = eval(e2, x_, y_);
-
-      if (fabs(r1 - r2) < (2 * options.x_zoom+options.y_zoom) / 2) {
+      double x_ = options.x_center + options.x_zoom * (x - width / 2);
+      double y_ = options.y_center + options.y_zoom * (height / 2 - y);
+      double x_2 = options.x_center + options.x_zoom * ((x + 1) - width / 2);
+      double y_2 = options.y_center + options.y_zoom * (height / 2 - (y + 1));
+      if (cut(&e1, &e2, x_, x_2, y_, y_2)) {
         wcprintf(y, x, color, BG_BLACK, c);
       }
     }
@@ -202,6 +241,26 @@ void draw_axis_numbers(void) {
              yz > 10 || yz < 0.001 ? " %.3e" : " %.3f",
              options.y_center + options.y_zoom * (h / 2 - y));
   }
+  update_ui();
+}
+
+void show_options(void) {
+  int y = options.height;
+  wcprintf(y - 7, 0, FG_WHITE, BG_BLACK,
+      "options.cpu_time_draw = %f", options.cpu_time_draw);
+  wcprintf(y - 6, 0, FG_WHITE, BG_BLACK,
+      "options.height = %d", options.height);
+  wcprintf(y - 5, 0, FG_WHITE, BG_BLACK,
+      "options.width = %d", options.width);
+  wcprintf(y - 4, 0, FG_WHITE, BG_BLACK,
+      "options.x_center = %f", options.x_center);
+  wcprintf(y - 3, 0, FG_WHITE, BG_BLACK,
+      "options.y_center = %f", options.y_center);
+  wcprintf(y - 2, 0, FG_WHITE, BG_BLACK,
+      "options.x_zoom = %f", options.x_zoom);
+  wcprintf(y - 1, 0, FG_WHITE, BG_BLACK,
+      "options.y_zoom = %f", options.y_zoom);
+
   update_ui();
 }
 

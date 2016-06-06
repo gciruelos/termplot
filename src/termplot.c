@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "debug.h"
 #include "options.h"
@@ -27,12 +28,19 @@ int main(int argc, char* argv[]) {
   start_debug();
 
   int x;
+  clock_t start, end;
   while (!options.quit) {
     term_clear();
     set_terminal_size();
+    start = clock();
     draw_axis();
     replot_functions();
     draw_axis_numbers();
+    end = clock();
+    options.cpu_time_draw = ((double) (end - start)) / CLOCKS_PER_SEC;
+    if (options.show_info) {
+      show_options();
+    }
 
     x = input();
     if (x == -1) {

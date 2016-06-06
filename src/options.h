@@ -1,6 +1,8 @@
 #ifndef OPTIONS
 #define OPTIONS
 
+#include <stdbool.h>
+
 struct {
   double x_center;
   double y_center;
@@ -10,7 +12,9 @@ struct {
   int width;
   int height;
 
-  int quit;
+  bool quit;
+  bool show_info;
+  double cpu_time_draw; 
 } options;
 
 void init_structs(void);

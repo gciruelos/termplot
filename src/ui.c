@@ -72,6 +72,9 @@ inline int input(void) {
       options.x_zoom += options.x_zoom*zoom_factor/(1-zoom_factor);
       options.y_zoom += options.y_zoom*zoom_factor/(1-zoom_factor);
       break;
+    case 'i':
+      options.show_info = !options.show_info;
+      break;
     case KEY_UP:
       options.y_center += options.y_zoom;
       break;

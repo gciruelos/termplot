@@ -1,6 +1,6 @@
 CC = gcc
 WARNINGS = -Wall -Wextra -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual
-CFLAGS = $(WARNINGS) -Werror -std=c11 -pedantic -O2 -ggdb
+CFLAGS = $(WARNINGS) -Werror -std=c11 -pedantic -O2 --fast-math -pg -ggdb
 TARGETS = options.o ui.o ui_impl.o command.o plot.o parser.o debug.o 
 UI_IMPL = 
 LIBRARIES = -lm
@@ -28,11 +28,11 @@ test.o: test/test.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 termplot: $(TARGETS) termplot.o
-	$(CC) $(LIBRARIES) $(TARGETS) termplot.o -o $@
+	$(CC) $(LIBRARIES) $(TARGETS) -pg termplot.o -o $@
 
 testbin:
 testbin: $(TARGETS) test.o
-	$(CC) $(LIBRARIES) $(TARGETS) test.o -o $@
+	$(CC) $(LIBRARIES) $(TARGETS) -pg test.o -o $@
 
 test: testbin
 	./testbin

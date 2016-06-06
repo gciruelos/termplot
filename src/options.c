@@ -6,6 +6,8 @@ void init_structs(void) {
   options.x_zoom = 0.1;
   options.y_zoom = 0.2;
 
-  options.quit = 0;
+  options.quit = false;
+  options.show_info = false;
+  options.cpu_time_draw = 0.0;
 }
 

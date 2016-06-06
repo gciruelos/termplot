@@ -274,28 +274,31 @@ double eval(const expr e, double x, double y) {
 
   for (unsigned int i = 0; i < e.size; i++) {
     token* t = e.parsed[i];
-    if (t->type == NUM || t->type == CONST) {
-      stack[++stack_top] = t->data.n;
-    } else if (t->type == VARX) {
-      stack[++stack_top] = x;
-    } else if (t->type == VARY) {
-      stack[++stack_top] = y;
-    } else if (t->type == OP) {
-      struct op_s o = t->data.op;
-      if (o.unary) {
-        double a = stack[stack_top];
-
-        stack[stack_top] = o.function.un(a);
-      } else {
-        double a1 = stack[stack_top - 1];
-        double a2 = stack[stack_top];
-
-        stack[--stack_top] = o.function.bin(a1, a2);
-      }
-    } else if (t->type == FUNC) {
-      struct func_s f = t->data.func;
-      double a = stack[stack_top];
-      stack[stack_top] = f.f(a);
+    switch (t->type) {
+      case NUM:
+      case CONST:
+        stack[++stack_top] = t->data.n;
+        break;
+      case VARX:
+        stack[++stack_top] = x;
+        break;
+      case VARY:
+        stack[++stack_top] = y;
+        break;
+      case OP:
+        if (t->data.op.unary) {
+          stack[stack_top] = t->data.op.function.un(stack[stack_top]);
+        } else {
+          double eval_fn =
+            t->data.op.function.bin(stack[stack_top - 1],stack[stack_top]);
+          stack[--stack_top] = eval_fn;
+        }
+        break;
+      case FUNC:
+        stack[stack_top] = t->data.func.f(stack[stack_top]);
+        break;
+      default:
+        break;
     }
   }
 
