@@ -10,16 +10,16 @@ double _div(double a1, double a2) { return a1 / a2; }
 double _mod(double a1, double a2) { return fmod(a1, a2); }
 
 struct op_s ops[] = {
-  {.function.un = _neg,
-    .prec = 10, .assoc = ASSOC_RIGHT, .unary = 1, .op = '_'},
   {.function.bin = pow,
     .prec =  9, .assoc = ASSOC_RIGHT, .unary = 0, .op = '^'},
+  {.function.un = _neg,
+    .prec = 8, .assoc = ASSOC_RIGHT, .unary = 1, .op = '_'},
   {.function.bin = _mul,
-    .prec =  8, .assoc = ASSOC_LEFT, .unary = 0, .op = '*'},
+    .prec =  7, .assoc = ASSOC_LEFT, .unary = 0, .op = '*'},
   {.function.bin = _div,
-    .prec =  8, .assoc = ASSOC_LEFT, .unary = 0, .op = '/'},
+    .prec =  7, .assoc = ASSOC_LEFT, .unary = 0, .op = '/'},
   {.function.bin = _mod,
-    .prec =  8, .assoc = ASSOC_LEFT, .unary = 0, .op = '%'},
+    .prec =  7, .assoc = ASSOC_LEFT, .unary = 0, .op = '%'},
   {.function.bin = _add,
     .prec =  5, .assoc = ASSOC_LEFT, .unary = 0, .op = '+'},
   {.function.bin = _sub,

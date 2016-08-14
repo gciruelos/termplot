@@ -19,4 +19,4 @@ struct {
 
 void init_structs(void);
 
-#endif
+#endif // OPTIONS

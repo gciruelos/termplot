@@ -35,7 +35,7 @@ void run_command(void) {
 
 void input_command(void) {
   int ch;
-  unsigned int i, current = hist_last + 1;
+  unsigned int i, current = command_history.last + 1;
 
   for (i = 0; i < CMD_SIZE; i++) {
     command[i] = '\0';
@@ -61,20 +61,20 @@ void input_command(void) {
         i++;
       }
     } else if (ch == KEY_UP) {
-      if (current != hist_first) {
+      if (current != command_history.first) {
         current = (current - 1) % CMD_HIST;
-        strcpy(command, command_history[current]);
+        strcpy(command, command_history.commands[current]);
         cursor = strlen(command);
       }
     } else if (ch == KEY_DOWN) {
-      if (current < hist_last) {
+      if (current < command_history.last) {
         current = (current + 1) % CMD_HIST;
-        strcpy(command, command_history[current]);
+        strcpy(command, command_history.commands[current]);
         cursor = strlen(command);
       } else {
         command[1] = '\0';
         cursor = 1;
-        if (current == hist_last) {
+        if (current == command_history.last) {
           current = (current + 1) % CMD_HIST;
         }
       }
@@ -92,15 +92,15 @@ void input_command(void) {
     }
 
     update_ui();
-    d_print("%d, %d\n", hist_first, current);
+    d_print("%d, %d\n", command_history.first, current);
     update_cmd();
     if(cursor==0) break;
   }
 
   if (strlen(command) > 1) {
-    hist_last = (hist_last + 1) % CMD_HIST;
-    /*if((hist_last+1)%CMD_HIST == hist_first) hist_first = (hist_first+1)%CMD_HIST;*/
-    strcpy(command_history[hist_last], command);
+    command_history.last = (command_history.last + 1) % CMD_HIST;
+    /*if((command_history.last+1)%CMD_HIST == command_history.first) command_history.first = (command_history.first+1)%CMD_HIST;*/
+    strcpy(command_history.commands[command_history.last], command);
     run_command();
   }
 }

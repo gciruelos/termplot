@@ -105,10 +105,10 @@ void init_ui(void) {
 
   buffer_next = 0;
 
-  hist_last = -1;
-  hist_first = 0;
+  command_history.last = -1;
+  command_history.first = 0;
   for (int i = 0; i < CMD_HIST; i++) {
-    command_history[i] = calloc(CMD_SIZE, sizeof(char));
+    command_history.commands[i] = calloc(CMD_SIZE, sizeof(char));
   }
 }
 
@@ -116,7 +116,7 @@ void clean_ui(void) {
   int i;
 
   for (i = 0; i < CMD_HIST; i++) {
-    free(command_history[i]);
+    free(command_history.commands[i]);
   }
 
   for (i = 0; i < BUFFER_SIZE; i++) {

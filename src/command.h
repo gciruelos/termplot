@@ -1,3 +1,5 @@
+#ifndef COMMAND
+#define COMMAND
 #include <string.h>
 #include <ctype.h>
 
@@ -10,12 +12,16 @@
 #define CMD_HIST 10
 #define CMD_SIZE 500
 
-char * command_history[CMD_HIST];
-unsigned int hist_last, hist_first;
-// Kind of bounded stack.
+struct {
+  // Kind of bounded stack.
+  char* commands[CMD_HIST];
+  unsigned int last;
+  unsigned int first;
+} command_history;
 
 char command[CMD_SIZE];
 unsigned int cursor;
 
 void run_command(void);
 void input_command(void);
+#endif // COMMAND
