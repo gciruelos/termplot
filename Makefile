@@ -16,7 +16,7 @@ OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.c=.o)))
 TEST_SRCS = $(wildcard $(TEST_DIR)*.c)
 TEST_OBJS = $(addprefix $(TEST_OBJ_DIR),$(notdir $(TEST_SRCS:.c=.o)))
 UI_IMPL = 
-TERMBOX = true
+TERMBOX = false
 EXECUTABLE = termplot
 TEST_EXECUTABLE = testbin
 MKDIR_P = mkdir -p
@@ -40,8 +40,8 @@ clean:
 debug: OPT_FLAGS = -ggdb -O2
 debug: all
 
+travis: TERMBOX = false
 travis: all test
-
 
 $(OBJ_DIR):
 	${MKDIR_P} $@
