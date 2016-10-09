@@ -1,7 +1,7 @@
 # termplot
 [![Build Status](https://travis-ci.org/gciruelos/termplot.svg?branch=master)](https://travis-ci.org/gciruelos/termplot)
 
-Terminal-based mathematical function plotter
+Lightweight terminal-based mathematical function plotter.
 
 # Try it out
 
@@ -12,7 +12,7 @@ First you have to clone the repository
 
 Now build and run
 
-    make
+    make termplot
     ./termplot
 
 #How to use
@@ -26,7 +26,7 @@ And it will work. Termplot can also plot implicit functions, like
     :plot x^2+y^2 = 1
 
 #Screenshots
-![![Scren](https://raw.githubusercontent.com/gciruelos/termplot/master/info/screen1.png)](info/screen1.png "Screenshot")
+![![Scren](https://raw.githubusercontent.com/gciruelos/termplot/master/img/screen1.png)](img/screen1.png "Screenshot")
 
 #TODO
 
