@@ -1,5 +1,5 @@
 ifndef $(CC)
-	CC = clang
+	CC = gcc
 endif
 WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
 					 -Wcast-qual
