@@ -63,14 +63,14 @@ $(OBJ_DIR)%.o: $(TESD_DIR)%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(EXECUTABLE): $(OBJS)
-	$(CC) $(LFLAGS) $(OPT_FLAGS) $^ -o $@
+	$(CC) $(OPT_FLAGS) $^ -o $@ $(LFLAGS)
 
 $(TEST_OBJ_DIR)%.o: $(TEST_DIR)%.c
 	$(CC) $(CFLAGS) $(OPT_FLAGS) -c -o $@ $<
 
 $(TEST_EXECUTABLE): OBJS := $(filter-out obj/termplot.o, $(OBJS))
 $(TEST_EXECUTABLE): $(OBJS) $(TEST_OBJS)
-	$(CC) $(LFLAGS) $(OPT_FLAGS) $(OBJS) $(TEST_OBJS) -o $@
+	$(CC) $(OPT_FLAGS) $(OBJS) $(TEST_OBJS) -o $@ $(LFLAGS)
 
 
 test: $(TEST_OBJ_DIR)
