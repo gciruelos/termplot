@@ -32,3 +32,6 @@ testbin
 
 # Debug files
 *.dSYM/
+
+# ???
+*.plist

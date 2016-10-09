@@ -19,6 +19,7 @@
 #ifndef M_E
   #define M_E 2.79
 #endif
+#define MAX_FUNCTION_NAME_LENGTH 10
 
 
 struct op_s {

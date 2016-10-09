@@ -69,7 +69,7 @@ unsigned int next_token(const char* term, token* res) {
       res->type = FUNC;
 
       res->data.func.f = funcs[i].f;
-      strcpy(res->data.func.name, funcs[i].name);
+      strncpy(res->data.func.name, funcs[i].name, MAX_FUNCTION_NAME_LENGTH);
 
       idx += strlen(funcs[i].name);
       return idx;
@@ -85,7 +85,7 @@ unsigned int next_token(const char* term, token* res) {
       res->type = CONST;
 
       res->data.n = consts[i].n;
-      strcpy(res->data.cst.name, consts[i].name);
+      strncpy(res->data.cst.name, consts[i].name, MAX_FUNCTION_NAME_LENGTH);
 
       idx += strlen(consts[i].name);
       return idx;
@@ -161,11 +161,8 @@ expr parse(const char* in) {
   int stack_top = -1;
 
   int parse_error = 0;
-
   enum token_t last_tok_type = _NONE;
-
   unsigned int forward = 0;
-
   struct op_s o1, o2;
 
   while (*in != '\0') {
@@ -269,7 +266,7 @@ expr parse(const char* in) {
 }
 
 double eval(const expr e, double x, double y) {
-  double stack[100];
+  double stack[100] = { 0. };
   int stack_top = -1;
 
   for (unsigned int i = 0; i < e.size; i++) {
