@@ -20,7 +20,7 @@ EXECUTABLE = termplot
 TEST_EXECUTABLE = testbin
 MKDIR_P = mkdir -p
 
-ifndef $(USE_TERMBOX)
+ifndef $(USE_NCURSES)
   TERMBOX = false
 else
 	TERMBOX = true

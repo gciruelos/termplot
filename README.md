@@ -1,4 +1,5 @@
 # termplot
+[![Build Status](https://travis-ci.org/gciruelos/termplot.svg?branch=master)](https://travis-ci.org/gciruelos/termplot)
 Terminal-based mathematical function plotter
 
 # Try it out

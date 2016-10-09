@@ -2,6 +2,8 @@ language: c
 compiler:
   - gcc
   - clang
+env:
+  - USE_NCURSES=true
 script:
   - $CC --version
   - make -j travis
