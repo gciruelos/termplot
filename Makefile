@@ -1,45 +1,68 @@
 CC = gcc
-WARNINGS = -Wall -Wextra -Wshadow -Wstrict-prototypes -Wpointer-arith \
+WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
 					 -Wcast-qual
-CFLAGS = $(WARNINGS) -Werror -std=c11 -pedantic -O2 --fast-math -pg -ggdb
-TARGETS = options.o ui.o ui_impl.o command.o plot.o parser.o debug.o 
+OPT_FLAGS = -O2 -flto --fast-math
+CFLAGS = $(WARNINGS) -Werror -std=c11 -pedantic
+LFLAGS = -lm
+TEST_DIR = test/
+SRC_DIR = src/
+UI_SRC_DIR = $(SRC_DIR)ui/
+OBJ_DIR = obj/
+TEST_OBJ_DIR = $(OBJ_DIR)test/
+SRCS = $(wildcard $(SRC_DIR)*.c)
+OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.c=.o)))
+TEST_SRCS = $(wildcard $(TEST_DIR)*.c)
+TEST_OBJS = $(addprefix $(TEST_OBJ_DIR),$(notdir $(TEST_SRCS:.c=.o)))
 UI_IMPL = 
-LIBRARIES = -lm
 TERMBOX = true
+EXECUTABLE = termplot
+TEST_EXECUTABLE = testbin
+MKDIR_P = mkdir -p
 
 ifeq ($(TERMBOX), true)
 	CFLAGS+=-DINCL_TERMBOX
-	UI_IMPL=src/ui/ui_termbox.c
-	LIBRARIES+=-ltermbox
+	SRCS+=src/ui/ui_termbox.c
+	LFLAGS+=-ltermbox
 else
-	UI_IMPL=src/ui/ui_ncurses.c
-	LIBRARIES+=-lncurses
+	SRCS+=src/ui/ui_ncurses.c
+	LFLAGS+=-lncurses
 endif
 
-all: termplot
+.PHONY: all clean debug
 
-%.o: src/%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-ui_impl.o: $(UI_IMPL)
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-termplot.o: src/termplot.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-parser_test.o: test/parser_test.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-termplot: $(TARGETS) termplot.o
-	$(CC) $(LIBRARIES) $(TARGETS) -pg termplot.o -o $@
-
-parser_test:
-parser_test: $(TARGETS) parser_test.o
-	$(CC) $(LIBRARIES) $(TARGETS) -pg parser_test.o -o $@
-
-test: parser_test
-	./parser_test
+all: $(OBJ_DIR) $(EXECUTABLE)
 
 clean:
-	rm -f termplot.o parser_test.o $(TARGETS) debug.out termplot parser_test
+	rm -f $(OBJS) $(TEST_OBJS) $(EXECUTABLE) $(TEST_EXECUTABLE)
+
+debug: OPT_FLAGS = -ggdb -O2
+debug: all
+
+$(OBJ_DIR):
+	${MKDIR_P} $@
+	
+$(TEST_OBJ_DIR):
+	${MKDIR_P} $@
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	$(CC) $(CFLAGS) $(OPT_FLAGS) -c -o $@ $<
+
+$(OBJ_DIR)%.o: $(UI_SRC_DIR)%.c
+	$(CC) $(CFLAGS) $(OPT_FLAGS) -c -o $@ $<
+
+$(OBJ_DIR)%.o: $(TESD_DIR)%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(EXECUTABLE): $(OBJS)
+	$(CC) $(LFLAGS) $(OPT_FLAGS) $^ -o $@
+
+$(TEST_OBJ_DIR)%.o: $(TEST_DIR)%.c
+	$(CC) $(CFLAGS) $(OPT_FLAGS) -c -o $@ $<
+
+$(TEST_EXECUTABLE): OBJS := $(filter-out obj/termplot.o, $(OBJS))
+$(TEST_EXECUTABLE): $(OBJS) $(TEST_OBJS)
+	$(CC) $(LFLAGS) $(OPT_FLAGS) $(OBJS) $(TEST_OBJS) -o $@
+
+test: clean $(TEST_EXECUTABLE)
+	./$(TEST_EXECUTABLE)
 

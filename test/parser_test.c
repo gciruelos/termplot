@@ -39,7 +39,7 @@ struct parser_test test1[] = {
   { .f = NULL, .str = "" },
 };
 
-void parse1(void) {
+void parse_1(void) {
   unsigned int i;
   expr e;
   double x;
@@ -90,7 +90,7 @@ void parse_const(void) {
 }
 
 // To test using american fuzzy lop.
-void afl(const char* filename) {
+void parse_afl(const char* filename) {
   FILE * fp;
   fp = fopen(filename, "r");
   int nchars = 100;
@@ -124,13 +124,5 @@ void afl(const char* filename) {
 
   }
   free(input_string);
-}
-
-int main(int argc, char** argv) {
-  parse1();
-  parse_const();
-  if (argc > 1) {
-    afl(argv[1]);
-  }
 }
 
