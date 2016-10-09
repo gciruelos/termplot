@@ -1,6 +1,5 @@
 #ifndef COMMAND
 #define COMMAND
-#include <string.h>
 #include <ctype.h>
 
 #include "debug.h"
@@ -24,4 +23,5 @@ unsigned int cursor;
 
 void run_command(void);
 void input_command(void);
+
 #endif // COMMAND

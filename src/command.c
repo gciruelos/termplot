@@ -1,7 +1,13 @@
 #include "command.h"
 
-void nothing(__attribute__((unused)) char* arg) { ; }
-void quit(__attribute__((unused)) char* arg) { options.quit = 1; }
+#include <stdlib.h>
+#include <string.h>
+
+void nothing(__attribute__((unused)) char* arg) {
+}
+void quit(__attribute__((unused)) char* arg) {
+  options.quit = 1;
+}
 
 struct {
   char name[10];
@@ -24,8 +30,7 @@ void run_command(void) {
   }
   d_print("cmd: %d - %s\n", cmd, cmds[cmd].name);
 
-  char* args =  NULL;
-  args = cmdptr + strspn(cmdptr, cmds[cmd].name);
+  char* args = cmdptr + strspn(cmdptr, cmds[cmd].name);
 
   while (isspace(*args)) {
     args++;
@@ -63,13 +68,13 @@ void input_command(void) {
     } else if (ch == KEY_UP) {
       if (current != command_history.first) {
         current = (current - 1) % CMD_HIST;
-        strcpy(command, command_history.commands[current]);
+        strncpy(command, command_history.commands[current], CMD_SIZE);
         cursor = strlen(command);
       }
     } else if (ch == KEY_DOWN) {
       if (current < command_history.last) {
         current = (current + 1) % CMD_HIST;
-        strcpy(command, command_history.commands[current]);
+        strncpy(command, command_history.commands[current], CMD_SIZE);
         cursor = strlen(command);
       } else {
         command[1] = '\0';
@@ -100,7 +105,7 @@ void input_command(void) {
   if (strlen(command) > 1) {
     command_history.last = (command_history.last + 1) % CMD_HIST;
     /*if((command_history.last+1)%CMD_HIST == command_history.first) command_history.first = (command_history.first+1)%CMD_HIST;*/
-    strcpy(command_history.commands[command_history.last], command);
+    strncpy(command_history.commands[command_history.last], command, CMD_SIZE);
     run_command();
   }
 }
