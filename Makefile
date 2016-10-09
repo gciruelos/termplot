@@ -1,4 +1,6 @@
-CC = gcc
+ifndef $(CC)
+	CC = gcc
+endif
 WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
 					 -Wcast-qual
 OPT_FLAGS = -O2 -flto --fast-math
@@ -28,7 +30,7 @@ else
 	LFLAGS+=-lncurses
 endif
 
-.PHONY: all clean debug
+.PHONY: all clean debug travis
 
 all: $(OBJ_DIR) $(EXECUTABLE)
 
@@ -37,6 +39,9 @@ clean:
 
 debug: OPT_FLAGS = -ggdb -O2
 debug: all
+
+travis: all test
+
 
 $(OBJ_DIR):
 	${MKDIR_P} $@
@@ -63,6 +68,6 @@ $(TEST_EXECUTABLE): OBJS := $(filter-out obj/termplot.o, $(OBJS))
 $(TEST_EXECUTABLE): $(OBJS) $(TEST_OBJS)
 	$(CC) $(LFLAGS) $(OPT_FLAGS) $(OBJS) $(TEST_OBJS) -o $@
 
-test: clean $(TEST_EXECUTABLE)
+test: $(TEST_EXECUTABLE)
 	./$(TEST_EXECUTABLE)
 
