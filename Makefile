@@ -16,10 +16,15 @@ OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.c=.o)))
 TEST_SRCS = $(wildcard $(TEST_DIR)*.c)
 TEST_OBJS = $(addprefix $(TEST_OBJ_DIR),$(notdir $(TEST_SRCS:.c=.o)))
 UI_IMPL = 
-TERMBOX = false
 EXECUTABLE = termplot
 TEST_EXECUTABLE = testbin
 MKDIR_P = mkdir -p
+
+ifndef $(USE_TERMBOX)
+  TERMBOX = false
+else
+	TERMBOX = true
+endif
 
 ifeq ($(TERMBOX), true)
 	CFLAGS+=-DINCL_TERMBOX
@@ -40,7 +45,6 @@ clean:
 debug: OPT_FLAGS = -ggdb -O2
 debug: all
 
-travis: TERMBOX = false
 travis: all test
 
 $(OBJ_DIR):
@@ -68,6 +72,8 @@ $(TEST_EXECUTABLE): OBJS := $(filter-out obj/termplot.o, $(OBJS))
 $(TEST_EXECUTABLE): $(OBJS) $(TEST_OBJS)
 	$(CC) $(LFLAGS) $(OPT_FLAGS) $(OBJS) $(TEST_OBJS) -o $@
 
+
+test: $(TEST_OBJ_DIR)
 test: $(TEST_EXECUTABLE)
 	./$(TEST_EXECUTABLE)
 
