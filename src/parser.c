@@ -59,10 +59,10 @@ void assign(struct op_s* op, char opch) {
 
 
 unsigned int next_token(const char* term, token* res) {
-  unsigned int idx = 0, i;
+  unsigned int idx = 0;
 
   /* Look for functions. */
-  for(i = 0; i < FUNCS_NUM; i++) {
+  for(unsigned int i = 0; i < FUNCS_NUM; i++) {
     if (strstr(term, funcs[i].name) == term) {
       d_print(funcs[i].name);
 
@@ -78,7 +78,7 @@ unsigned int next_token(const char* term, token* res) {
 
 
   /* Look for constants. */
-  for (i = 0; i < CONSTS_NUM; i++) {
+  for (unsigned i = 0; i < CONSTS_NUM; i++) {
     if (strstr(term, consts[i].name) == term) {
       d_print(consts[i].name);
 
@@ -94,7 +94,7 @@ unsigned int next_token(const char* term, token* res) {
 
 
   /* Look for operators. */
-  for (i = 0; i < OPS_NUM; i++) {
+  for (unsigned int i = 0; i < OPS_NUM; i++) {
     if (*term == ops[i].op) {
       res->type = OP;
       assign(&(res->data.op), *term);
