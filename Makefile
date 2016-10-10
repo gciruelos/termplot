@@ -10,10 +10,8 @@ TEST_DIR = test/
 SRC_DIR = src/
 UI_SRC_DIR = $(SRC_DIR)ui/
 OBJ_DIR = obj/
-UI_BACKEND_SRC =
-UI_BACKEND_OBJ = $(addprefix $(OBJ_DIR),$(notdir $(UI_BACKEND_SRC:.c=.o)))
 TEST_OBJ_DIR = $(OBJ_DIR)test/
-SRCS = $(wildcard $(SRC_DIR)*.c) $(wildcard $(UI_SRC_DIR)*.c)
+SRCS = $(wildcard $(SRC_DIR)*.c)
 OBJS = $(addprefix $(OBJ_DIR),$(notdir $(SRCS:.c=.o)))
 TEST_SRCS = $(wildcard $(TEST_DIR)*.c)
 TEST_OBJS = $(addprefix $(TEST_OBJ_DIR),$(notdir $(TEST_SRCS:.c=.o)))
@@ -24,16 +22,14 @@ DEFAULT = termbox
 
 all: $(DEFAULT)
 
-ncurses: TERMBOX = false
-ncurses: OBJS := $(filter-out obj/ui_termbox.o, $(OBJS))
+ncurses: OBJS += obj/ui_ncurses.o
 ncurses: LFLAGS += -lncurses
-ncurses: $(OBJ_DIR) | $(EXECUTABLE)
+ncurses: $(OBJ_DIR) | obj/ui_ncurses.o $(EXECUTABLE)
 
-termbox: TERMBOX = true
 termbox: CFLAGS += -DINCL_TERMBOX
-termbox: OBJS := $(filter-out obj/ui_ncurses.o, $(OBJS))
+termbox: OBJS += obj/ui_termbox.o
 termbox: LFLAGS += -ltermbox
-termbox: $(OBJ_DIR) | $(EXECUTABLE)
+termbox: $(OBJ_DIR) | obj/ui_termbox.o $(EXECUTABLE)
 
 .PHONY: all clean debug travis ncurses termbox
 
@@ -62,7 +58,7 @@ $(TEST_OBJ_DIR)%.o: $(TEST_DIR)%.c
 	$(CC) $(CFLAGS) $(OPT_FLAGS) -c -o $@ $<
 
 $(EXECUTABLE): $(OBJS)
-	$(CC) $(OPT_FLAGS) $(OBJS) $(UI_BACKEND_OBJ) -o $@ $(LFLAGS)
+	$(CC) $(OPT_FLAGS) $(OBJS) -o $@ $(LFLAGS)
 
 # We test with ncurses.
 $(TEST_EXECUTABLE): OBJS := $(filter-out obj/termplot.o obj/ui_termbox.o, \
