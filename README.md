@@ -10,9 +10,16 @@ First you have to clone the repository
     git clone https://github.com/gciruelos/termplot.git
     cd termplot
 
-Now build and run
+If you have termbox, you can `termplot` by running
 
-    make termplot
+    make termbox
+
+Otherwise, you can use the old-fashioned ncurses
+
+    make ncurses
+
+Then run it
+
     ./termplot
 
 #How to use
@@ -26,7 +33,7 @@ And it will work. Termplot can also plot implicit functions, like
     :plot x^2+y^2 = 1
 
 #Screenshots
-![![Scren](https://raw.githubusercontent.com/gciruelos/termplot/master/img/screen1.png)](img/screen1.png "Screenshot")
+![![Screen](https://raw.githubusercontent.com/gciruelos/termplot/master/img/screen1.png)](img/screen1.png "Screenshot")
 
 #TODO
 
