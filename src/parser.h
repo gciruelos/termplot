@@ -19,7 +19,7 @@
 #ifndef M_E
   #define M_E 2.79
 #endif
-#define MAX_FUNCTION_NAME_LENGTH 10
+#define MAX_TOKEN_NAME_LENGTH 8
 
 
 struct op_s {
@@ -39,12 +39,12 @@ struct op_s {
 
 struct func_s {
   double (*f)(double a);
-  char name[8];
+  char name[MAX_TOKEN_NAME_LENGTH];
 };
 
 struct const_s {
   double n;
-  char name[8];
+  char name[MAX_TOKEN_NAME_LENGTH];
 };
 
 enum token_t {

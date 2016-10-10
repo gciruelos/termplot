@@ -69,7 +69,7 @@ unsigned int next_token(const char* term, token* res) {
       res->type = FUNC;
 
       res->data.func.f = funcs[i].f;
-      strncpy(res->data.func.name, funcs[i].name, MAX_FUNCTION_NAME_LENGTH);
+      strncpy(res->data.func.name, funcs[i].name, MAX_TOKEN_NAME_LENGTH);
 
       idx += strlen(funcs[i].name);
       return idx;
@@ -85,7 +85,7 @@ unsigned int next_token(const char* term, token* res) {
       res->type = CONST;
 
       res->data.n = consts[i].n;
-      strncpy(res->data.cst.name, consts[i].name, MAX_FUNCTION_NAME_LENGTH);
+      strncpy(res->data.cst.name, consts[i].name, MAX_TOKEN_NAME_LENGTH);
 
       idx += strlen(consts[i].name);
       return idx;
