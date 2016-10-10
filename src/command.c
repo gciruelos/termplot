@@ -15,7 +15,7 @@ struct {
 } cmds[] = {
   { .name = "nop",    .func = nothing },
   { .name = "plot",   .func = add_plot },
-  { .name = "remove", .func = delete_function },
+  { .name = "remove", .func = remove_plot },
   { .name = "quit",   .func = quit },
   { .name = "q",      .func = quit }
 };

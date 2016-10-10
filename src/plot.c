@@ -274,6 +274,10 @@ void delete_function(unsigned int i) {
   }
 }
 
+void remove_plot(char* cmd) {
+  delete_function((unsigned int) atoi(cmd));
+}
+
 void init_plotter(void) {
   for (unsigned int i = 0; i < MAX_FUNCTIONS; i++) {
     functions[i].valid = 0;

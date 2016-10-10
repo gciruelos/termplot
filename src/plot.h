@@ -31,6 +31,7 @@ void replot_functions(void);
 void plot_function(expr e, int index);
 void plot_implicit(expr e1, expr e2, int index);
 void add_plot(char* cmd);
+void remove_plot(char* cmd);
 
 void draw_axis(void);
 void draw_axis_numbers(void);
