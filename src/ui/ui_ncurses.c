@@ -1,5 +1,7 @@
 #include "ui_ncurses.h"
 
+#include <stdlib.h>
+
 void start_ui(void) {
   if (curses_started) {
     refresh();
@@ -29,12 +31,13 @@ void end_ui(void) {
   }
 }
 
-inline int w_getch(void) {
+inline int w_getch(struct options_t* options) {
+  (void) options;
   return getch();
 }
 
-inline void set_terminal_size(void) {
-  getmaxyx(stdscr, options.height, options.width);
+void set_terminal_size(struct options_t* options) {
+  getmaxyx(stdscr, options->height, options->width);
 }
 
 inline void prepare_paint(void) {
@@ -48,11 +51,11 @@ inline void paint_string(struct buffer_entry* b) {
   attroff(COLOR_PAIR(color));
 }
 
-inline void finish_paint(int cmd_length) {
+void finish_paint(int cmd_length, unsigned int cursor, struct options_t opts) {
   curs_set(cmd_length ? 1 : 0);
   if (cmd_length) {
     clrtoeol();
-    move(options.height - 1, cursor);
+    move(opts.height - 1, cursor);
   }
   refresh();
 }
@@ -63,4 +66,8 @@ inline void term_clear(void) {
 
 inline void term_refresh(void) {
   refresh();
+}
+
+inline bool should_redraw(void) {
+  return false;
 }

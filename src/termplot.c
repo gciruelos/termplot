@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
   clock_t start, end;
   while (!options.quit) {
     term_clear();
-    set_terminal_size();
+    set_terminal_size(&options);
     start = clock();
     draw_axis();
     replot_functions();

@@ -1,5 +1,7 @@
 #include "ui_termbox.h"
 
+bool should_redraw_termbox_ = false;
+
 void start_ui(void) {
   tb_init();
 }
@@ -8,23 +10,22 @@ void end_ui(void) {
   tb_shutdown();
 }
 
-inline int w_getch(void) {
+inline int w_getch(struct options_t* options) {
   struct tb_event event;
   while (TB_EVENT_KEY != tb_poll_event(&event)) {
     if (event.type == TB_EVENT_RESIZE) {
-      options.height = event.h;
-      options.width = event.w;
+      options->height = event.h;
+      options->width = event.w;
       tb_clear();
-      draw_axis();
-      replot_functions();
+      should_redraw_termbox_ = true;
     }
   }
   return event.ch ? event.ch : event.key;
 }
 
-inline void set_terminal_size(void) {
-  options.height = tb_height();
-  options.width = tb_width();
+inline void set_terminal_size(struct options_t* options) {
+  options->height = tb_height();
+  options->width = tb_width();
 }
 
 inline void prepare_paint(void) {
@@ -39,20 +40,20 @@ inline void paint_string(struct buffer_entry* b) {
   }
 }
 
-inline void finish_paint(int cmd_length) {
+void finish_paint(int cmd_length, unsigned int cursor, struct options_t opts) {
   if (cmd_length) {
     struct buffer_entry b = {
       .x = cmd_length,
-      .y = options.height - 1,
+      .y = opts.height - 1,
       .buf = " ",
       .fg_color = FG_WHITE,
       .bg_color = BG_BLACK
     };
-    for (int i = 0; i < options.width - 1 - cmd_length; i++) {
+    for (int i = 0; i < opts.width - 1 - cmd_length; i++) {
       paint_string(&b);
       b.x++;
     }
-    tb_set_cursor(cursor, options.height - 1);
+    tb_set_cursor(cursor, opts.height - 1);
   } else {
     tb_set_cursor(TB_HIDE_CURSOR, TB_HIDE_CURSOR);
   }
@@ -65,4 +66,10 @@ inline void term_clear(void) {
 
 inline void term_refresh(void) {
   tb_present();
+}
+
+inline bool should_redraw(void) {
+  bool value = should_redraw_termbox_;
+  should_redraw_termbox_ = false;
+  return value;
 }

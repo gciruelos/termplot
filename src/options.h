@@ -2,21 +2,10 @@
 #define OPTIONS
 
 #include <stdbool.h>
+#include "structs.h"
 
-struct {
-  double x_center;
-  double y_center;
-  double x_zoom;
-  double y_zoom;
 
-  int width;
-  int height;
-
-  bool quit;
-  bool show_info;
-  double cpu_time_draw; 
-} options;
-
+struct options_t options;
 void init_structs(void);
 
 #endif // OPTIONS

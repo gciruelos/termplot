@@ -51,7 +51,7 @@ void input_command(void) {
   cursor = 1;
   update_cmd();
 
-  while ((ch = w_getch()) != ENTER) {
+  while ((ch = w_getch(&options)) != ENTER) {
     if (ch == 127) { /* backspace */
       i = cursor - 1;
       while (command[i]) {
