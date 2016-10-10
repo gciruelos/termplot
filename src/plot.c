@@ -3,48 +3,38 @@
 #define MAX(x,y) ((x)>(y)?(x):(y))
 #define MIN(x,y) ((x)<(y)?(x):(y))
 
+void fill_plot(struct function* new) {
+  new->valid = 0;
+  if (new->f.size > 0) {
+    new->valid = 1;
+    int i;
+    for (i = 0; i < MAX_FUNCTIONS; i++) {
+      if (!functions[i].valid) {
+        functions[i] = *new;
+        break;
+      }
+    }
+  }
+}
+
 void add_plot(char* cmd) {
   if (strchr(cmd, '=') == NULL) {
     struct function new;
     new.f = parse(cmd);
-    /*new.g = y;*/
-
+    /* new.g = y; */
     new.type = EXPLICIT;
-    new.valid = 0;
 
-    if (new.f.size > 0) {
-      new.valid = 1;
-      int i;
-      for (i = 0; i < MAX_FUNCTIONS; i++) {
-        if (!functions[i].valid) {
-          functions[i] = new;
-          break;
-        }
-      }
-    }
+    fill_plot(&new);
   } else {
-    char* eq = strchr(cmd, '=');
-    if (eq) {
-      *eq = '\0';
-      struct function new;
-      new.f = parse(cmd);
-      new.g = parse(eq+1);
-      new.type = IMPLICIT;
-      new.valid = 0;
+    char* eq = strchr(cmd, '=');  // Not NULL.
+    *eq = '\0';
+    struct function new;
+    new.f = parse(cmd);
+    new.g = parse(eq+1);
+    new.type = IMPLICIT;
+    *eq = '=';
 
-      *eq = '=';
-
-      if (new.f.size > 0) {
-        new.valid = 1;
-        int i;
-        for (i = 0; i < MAX_FUNCTIONS; i++) {
-          if (!functions[i].valid) {
-            functions[i] = new;
-            break;
-          }
-        }
-      }
-    }
+    fill_plot(&new);  
   }
 }
 
@@ -273,7 +263,12 @@ void delete_function(unsigned int i) {
     
   if (i < MAX_FUNCTIONS) {
     if (functions[i].valid) {
-      delete_expr(&(functions[i].f));
+      if (functions[i].type == EXPLICIT) {
+        delete_expr(&(functions[i].f));
+      } else {
+        delete_expr(&(functions[i].f));
+        delete_expr(&(functions[i].g));
+      }
       functions[i].valid = 0;
     }
   }

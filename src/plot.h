@@ -12,7 +12,7 @@
 #define MAX_FUNCTIONS 16
 
 
-enum {EXPLICIT, IMPLICIT};
+enum { EXPLICIT, IMPLICIT };
 
 struct function {
     expr f;

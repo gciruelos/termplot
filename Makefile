@@ -70,3 +70,5 @@ $(TEST_EXECUTABLE): $(OBJS) $(TEST_OBJS)
 test: $(TEST_OBJ_DIR) | $(TEST_EXECUTABLE)
 	./$(TEST_EXECUTABLE)
 
+valgrind: termbox
+	valgrind --leak-check=full --show-leak-kinds=all -v ./$(EXECUTABLE)
