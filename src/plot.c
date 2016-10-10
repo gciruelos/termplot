@@ -275,15 +275,13 @@ void delete_function(unsigned int i) {
 }
 
 void init_plotter(void) {
-  unsigned int i;
-  for (i = 0; i < MAX_FUNCTIONS; i++) {
+  for (unsigned int i = 0; i < MAX_FUNCTIONS; i++) {
     functions[i].valid = 0;
   }
 }
 
 void clean_plotter(void) {
-  unsigned int i;
-  for (i = 0; i < MAX_FUNCTIONS; i++) {
+  for (unsigned int i = 0; i < MAX_FUNCTIONS; i++) {
     delete_function(i);
   }
 }
