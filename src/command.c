@@ -13,10 +13,11 @@ struct {
   char name[10];
   void (*func)(char* arg);
 } cmds[] = {
-  {"nop", nothing},
-  {"plot", add_plot},
-  {"quit", quit},
-  {"q", quit}
+  { .name = "nop",    .func = nothing },
+  { .name = "plot",   .func = add_plot },
+  { .name = "remove", .func = delete_function },
+  { .name = "quit",   .func = quit },
+  { .name = "q",      .func = quit }
 };
 
 void run_command(void) {
