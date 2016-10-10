@@ -32,10 +32,7 @@ And it will work. Termplot can also plot implicit functions, like
 
 * Zooming just in one axis
 * Replacing plots
-* Write out to files
 * Read from commandline/stdin
-* Different plot styles?
-* Less flicker
 
 #Contributors
 
