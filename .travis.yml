@@ -4,7 +4,7 @@ compiler:
   - clang
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y golang-termbox-dev
+  - sudo apt-get install -y golang-termbox
 script:
   - $CC --version
   - make travis
