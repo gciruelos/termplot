@@ -33,7 +33,7 @@ inline void update_cmd(void) {
     .bg_color = BG_BLACK
   };
   paint_string(&b);
-  finish_paint(strlen(command));
+  finish_paint(strlen(command), cursor, options);
 }
 
 void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
@@ -55,7 +55,11 @@ void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
 
 inline int input(void) {
   static double zoom_factor = 0.1;
-  int ch = w_getch();
+  int ch = w_getch(&options);
+  if (should_redraw()) {
+    draw_axis();
+    replot_functions();
+  }
 
   switch (ch) {
     case ERR:
@@ -138,5 +142,5 @@ inline void update_ui(void) {
     paint_string(b);
   }
   buffer_next = 0;
-  finish_paint(0);
+  finish_paint(0, cursor, options);
 }
