@@ -21,6 +21,7 @@ Otherwise, you can use the old-fashioned ncurses
 Then run it
 
     ./termplot
+    ./termplot --help
 
 #Official packages
 
