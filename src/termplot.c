@@ -8,10 +8,31 @@
 #include "ui.h"
 
 
+// This is ugly.
 int parse_args(int argc, char* argv[]) {
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "--debug") == 0) {
       debug_enabled = 1;
+    }
+    if (strcmp(argv[i], "--help") == 0) {
+      printf("Usage: %s [options]\n", argv[0]);
+      printf("Options:\n");
+      printf("\t--debug     Write debug information to a file.\n");
+      printf("\t--help      Show this help message.\n");
+      printf("\n");
+      printf("Commands:\n");
+      printf("\t:plot <formula>   Plot a formula, it can be explicit (like "
+             "\"x^3 + 1\") or\n"
+             "\t                  implicit (like \"y^3 + x^2 = y\").\n");
+      printf("\t:remove <n>       Remove the n-th plot.\n");
+      printf("\t:quit             Quit the program.\n");
+      printf("\n");
+      printf("Hotkeys:\n");
+      printf("\t+                 Zoom in.\n");
+      printf("\t-                 Zoom out.\n");
+      printf("\tArrow keys        Move across the plane.\n");
+      printf("\tq                 Quit.\n");
+      exit(0);
     }
   }
   return 0;
