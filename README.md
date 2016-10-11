@@ -22,6 +22,10 @@ Then run it
 
     ./termplot
 
+#Official packages
+
+If you use Archlinux, [you can install termplot by downloading it from the AUR](https://aur.archlinux.org/packages/termplot/).
+
 #How to use
 
 Termplot supports vim-like commands, so you can type
