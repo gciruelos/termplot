@@ -24,7 +24,7 @@ Then run it
 
 #Official packages
 
-If you use Archlinux, [you can install termplot by downloading it from the AUR](https://aur.archlinux.org/packages/termplot/).
+* Archlinux (AUR): [termplot](https://aur.archlinux.org/packages/termplot/).
 
 #How to use
 
