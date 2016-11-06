@@ -10,7 +10,7 @@ First you have to clone the repository
     git clone https://github.com/gciruelos/termplot.git
     cd termplot
 
-If you have termbox, you can `termplot` by running
+If you have termbox, you can compile `termplot` by running
 
     make termbox
 
@@ -42,9 +42,10 @@ And it will work. Termplot can also plot implicit functions, like
 
 #TODO
 
-* Zooming just in one axis
-* Replacing plots
-* Read from commandline/stdin
+* Zooming just in one axis.
+* Replacing plots.
+* Read from commandline/stdin.
+* Better documentation.
 
 #Contributors
 
