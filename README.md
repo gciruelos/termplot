@@ -23,31 +23,31 @@ Then run it
     ./termplot
     ./termplot --help
 
-#Official packages
+# Official packages
 
 * Archlinux (AUR): [termplot](https://aur.archlinux.org/packages/termplot/).
 
-#How to use
+# How to use
 
 Termplot supports vim-like commands, so you can type
-    
+
     :plot sin(x^2)
 
 And it will work. Termplot can also plot implicit functions, like
 
     :plot x^2+y^2 = 1
 
-#Screenshots
+# Screenshots
 ![![Screen](https://raw.githubusercontent.com/gciruelos/termplot/master/img/screen1.png)](img/screen1.png "Screenshot")
 
-#TODO
+# TODO
 
 * Zooming just in one axis.
 * Replacing plots.
 * Read from commandline/stdin.
 * Better documentation.
 
-#Contributors
+# Contributors
 
 * [Yu-Jie Lin](https://github.com/livibetter)
 
