@@ -3,7 +3,7 @@ ifndef CC
 endif
 WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
 					 -Wcast-qual
-OPT_FLAGS = -O2 -flto -ffast-math
+OPT_FLAGS = -O3 -flto -ffast-math
 CFLAGS = $(WARNINGS) -Werror -std=c99 -pedantic
 LFLAGS = -lm
 TEST_DIR = test/
@@ -18,7 +18,7 @@ TEST_OBJS = $(addprefix $(TEST_OBJ_DIR),$(notdir $(TEST_SRCS:.c=.o)))
 EXECUTABLE = termplot
 TEST_EXECUTABLE = testbin
 MKDIR_P = mkdir -p
-DEFAULT = termbox
+DEFAULT = ncurses
 
 all: $(DEFAULT)
 
