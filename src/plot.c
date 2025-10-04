@@ -53,7 +53,7 @@ void replot_functions(void) {
 }
 
 void plot_function(expr e, int index) {
-  static char c[1] = "o";
+  static char c[2] = "o";
 
   int height = options.height;
   int width = options.width;
@@ -146,7 +146,7 @@ bool cut(const expr* e1, const expr* e2,
 
 void plot_implicit(expr e1, expr e2, int index) {
 
-  static char c[1] = "o";
+  static char c[2] = "o";
 
   int height = options.height;
   int width = options.width;
