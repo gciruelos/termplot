@@ -1,5 +1,4 @@
-#ifndef UI_TERMBOX
-#define UI_TERMBOX
+#pragma once
 
 #include <termbox.h>
 #include <stdbool.h>
@@ -28,4 +27,3 @@ void term_clear(void);
 void term_refresh(void);
 bool should_redraw(void);
 
-#endif

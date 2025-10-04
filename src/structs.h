@@ -1,5 +1,4 @@
-#ifndef STRUCTS
-#define STRUCTS
+#pragma once
 
 struct buffer_entry {
   char* buf;
@@ -22,5 +21,3 @@ struct options_t {
   bool show_info;
   double cpu_time_draw; 
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef UI_NCURSES
-#define UI_NCURSES
+#pragma once
 
 #include <ncurses.h>
 
@@ -23,5 +22,3 @@ void finish_paint(int cmd_length, unsigned int cursor, struct options_t opts);
 void term_clear(void);
 void term_refresh(void);
 bool should_redraw(void);
-
-#endif

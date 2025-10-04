@@ -1,5 +1,4 @@
-#ifndef PARSER
-#define PARSER
+#pragma once
 
 #include <ctype.h>
 #include <math.h>
@@ -84,5 +83,3 @@ void delete_expr(expr*  d);
 
 void debug_print(token** s, int sz);
 void debug_print_token(token tok);
-
-#endif

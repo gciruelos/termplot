@@ -1,5 +1,4 @@
-#ifndef PLOT
-#define PLOT
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,4 +41,3 @@ void init_plotter(void);
 void clean_plotter(void);
 
 
-#endif
