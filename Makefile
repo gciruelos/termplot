@@ -4,8 +4,8 @@ endif
 WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
 					 -Wcast-qual
 OPT_FLAGS = -O3 -flto -ffast-math
-CFLAGS = $(WARNINGS) -Werror -std=c99 -pedantic
-LFLAGS = -lm
+CFLAGS = $(WARNINGS) -Werror -std=c23 -pedantic
+LFLAGS = -lm -z muldefs
 TEST_DIR = test/
 SRC_DIR = src/
 UI_SRC_DIR = $(SRC_DIR)ui/
