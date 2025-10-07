@@ -5,10 +5,10 @@
 
 #include "../src/parser.h"
 
-#define EPSILON 0.0001
+#define EPSILON 1e-10
 #define ASSERT_SIM(x,y) \
-  if(fabs((x)-(y))>=EPSILON){ \
-    printf("Expected value: %f\n  Actual value: %f\n",y,x); \
+  if (((x) != (y)) && (fabs((x) - (y)) / (x) >= EPSILON)) { \
+    printf("Expected value: %f\n  Actual value: %f\n", y, x); \
     assert(0); \
   }
 

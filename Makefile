@@ -4,7 +4,7 @@ endif
 WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
 					 -Wcast-qual
 OPT_FLAGS = -O3 -flto -ffast-math
-CFLAGS = $(WARNINGS) -Werror -std=c23 -pedantic
+CFLAGS = $(WARNINGS) -Werror -std=c2x -pedantic
 LFLAGS = -lm
 TEST_DIR = test/
 SRC_DIR = src/
