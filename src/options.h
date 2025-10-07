@@ -4,5 +4,5 @@
 #include "structs.h"
 
 
-struct options_t options;
+extern struct options_t options;
 void init_structs(void);

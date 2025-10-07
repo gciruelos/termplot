@@ -1,7 +1,10 @@
 #include "command.h"
 
-#include <stdlib.h>
 #include <string.h>
+
+command_history_t command_history;
+char command[CMD_SIZE] = {0};
+unsigned int cursor = 0;
 
 void nothing(__attribute__((unused)) char* arg) {
 }

@@ -9,8 +9,8 @@
 #define FG_WHITE BW
 #define BG_BLACK BW
 
-WINDOW* win;
-bool curses_started;
+extern WINDOW* win;
+extern bool curses_started;
 
 void start_ui(void);
 void end_ui(void);

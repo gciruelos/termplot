@@ -3,6 +3,8 @@
 #define MAX(x,y) ((x)>(y)?(x):(y))
 #define MIN(x,y) ((x)<(y)?(x):(y))
 
+function functions[MAX_FUNCTIONS];
+
 void fill_plot(struct function* new) {
   new->valid = 0;
   if (new->f.size > 0) {

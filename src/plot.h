@@ -13,12 +13,14 @@
 
 enum { EXPLICIT, IMPLICIT };
 
-struct function {
+typedef struct function {
     expr f;
     expr g;
     unsigned char type;
     unsigned char valid;
-} functions[MAX_FUNCTIONS];
+} function;
+
+extern function functions[MAX_FUNCTIONS];
 
 
 double test_interval(const expr* e1, const expr* e2, 
