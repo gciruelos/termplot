@@ -1,5 +1,4 @@
-#ifndef COMMAND
-#define COMMAND
+#pragma once
 #include <ctype.h>
 
 #include "debug.h"
@@ -11,17 +10,17 @@
 #define CMD_HIST 10
 #define CMD_SIZE 500
 
-struct {
+typedef struct command_history_t {
   // Kind of bounded stack.
   char* commands[CMD_HIST];
   unsigned int last;
   unsigned int first;
-} command_history;
+} command_history_t;
 
-char command[CMD_SIZE];
-unsigned int cursor;
+extern command_history_t command_history;
+
+extern char command[CMD_SIZE];
+extern unsigned int cursor;
 
 void run_command(void);
 void input_command(void);
-
-#endif // COMMAND

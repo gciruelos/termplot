@@ -1,5 +1,7 @@
 #include "options.h"
 
+struct options_t options;
+
 void init_structs(void) {
   options.x_center = 0.0;
   options.y_center = 0.0;

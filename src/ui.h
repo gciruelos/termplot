@@ -1,5 +1,4 @@
-#ifndef UI
-#define UI
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,5 +19,3 @@ void wcprintf(int y, int x, unsigned int fg_color, unsigned int bg_color,
               char* fmt, ...);
 void update_cmd(void);
 void update_ui(void);
-
-#endif

@@ -2,6 +2,9 @@
 
 #include <stdlib.h>
 
+WINDOW* win = NULL;
+bool curses_started = false;
+
 void start_ui(void) {
   if (curses_started) {
     refresh();

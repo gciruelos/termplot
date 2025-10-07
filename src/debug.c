@@ -1,6 +1,7 @@
 #include "debug.h"
 
 FILE * dbg;
+int debug_enabled = 0;
 
 void start_debug(void) {
   if (debug_enabled) {
