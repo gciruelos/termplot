@@ -1,14 +1,19 @@
 ifndef CC
 	CC = gcc
 endif
-WARNINGS = -Wall -Wextra -Werror -Wshadow -Wstrict-prototypes -Wpointer-arith \
-					 -Wcast-qual
+
+NO_WARNINGS = -Wno-unused-result # termbox2.h has some unused results
+WARNINGS = $(NO_WARNINGS) -Wall -Wextra -Wshadow -Wpedantic \
+           -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Wfloat-equal \
+		   -Wundef -Wformat=2
+
 OPT_FLAGS = -O3 -flto -ffast-math
 CFLAGS = $(WARNINGS) -Werror -std=c2x -pedantic
 LFLAGS = -lm
 TEST_DIR = test/
 SRC_DIR = src/
 UI_SRC_DIR = $(SRC_DIR)ui/
+TERMBOX2_H = $(UI_SRC_DIR)termbox2.h
 OBJ_DIR = obj/
 TEST_OBJ_DIR = $(OBJ_DIR)test/
 SRCS = $(wildcard $(SRC_DIR)*.c)
@@ -28,14 +33,17 @@ ncurses: $(OBJ_DIR) | obj/ui_ncurses.o $(EXECUTABLE)
 
 termbox: CFLAGS += -DINCL_TERMBOX
 termbox: OBJS += obj/ui_termbox.o
-termbox: LFLAGS += -ltermbox
-termbox: $(OBJ_DIR) | obj/ui_termbox.o $(EXECUTABLE)
+termbox: $(OBJ_DIR) $(TERMBOX2_H) | obj/ui_termbox.o $(EXECUTABLE)
+
+$(TERMBOX2_H):
+	curl https://raw.githubusercontent.com/termbox/termbox2/refs/heads/master/termbox2.h -o $@ # MIT license
 
 .PHONY: all clean debug travis ncurses termbox
 
 clean:
 	rm -f $(OBJS) $(TEST_OBJS) $(EXECUTABLE) $(TEST_EXECUTABLE)
 	rm -r $(OBJ_DIR)
+	rm -f $(TERMBOX2_H)
 
 debug: OPT_FLAGS = -ggdb -O2
 debug: termbox

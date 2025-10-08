@@ -1,13 +1,13 @@
 #pragma once
 
-#include <termbox.h>
 #include <stdbool.h>
+#include "termbox2.h"
 
 #include "../structs.h"
 
 #define BW 0
 #define ERR 0
-#define KEY_UP TB_KEY_ARROW_UP 
+#define KEY_UP TB_KEY_ARROW_UP
 #define KEY_DOWN TB_KEY_ARROW_DOWN
 #define KEY_RIGHT TB_KEY_ARROW_RIGHT
 #define KEY_LEFT TB_KEY_ARROW_LEFT

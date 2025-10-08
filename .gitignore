@@ -35,3 +35,7 @@ testbin
 
 # ???
 *.plist
+
+# Copied and debug files
+src/ui/termbox2.h
+*.log

@@ -1,5 +1,8 @@
 #include "ui_termbox.h"
 
+#define TB_IMPL 1
+#include "termbox2.h"
+
 bool should_redraw_termbox_ = false;
 
 void start_ui(void) {
@@ -12,14 +15,15 @@ void end_ui(void) {
 
 inline int w_getch(struct options_t* options) {
   struct tb_event event;
-  while (TB_EVENT_KEY != tb_poll_event(&event)) {
+  do {
+    tb_poll_event(&event);
     if (event.type == TB_EVENT_RESIZE) {
       options->height = event.h;
       options->width = event.w;
       tb_clear();
       should_redraw_termbox_ = true;
     }
-  }
+  } while(TB_EVENT_KEY != event.type);
   return event.ch ? event.ch : event.key;
 }
 
@@ -35,7 +39,7 @@ inline void paint_string(struct buffer_entry* b) {
   int x = b->x;
   int y = b->y;
   for (int i = 0; b->buf[i] != '\0'; i++) {
-    tb_change_cell(x, y, b->buf[i], b->fg_color, b->bg_color);
+    tb_set_cell(x, y, b->buf[i], b->fg_color, b->bg_color);
     x++;
   }
 }
@@ -55,7 +59,7 @@ void finish_paint(int cmd_length, unsigned int cursor, struct options_t opts) {
     }
     tb_set_cursor(cursor, opts.height - 1);
   } else {
-    tb_set_cursor(TB_HIDE_CURSOR, TB_HIDE_CURSOR);
+    tb_set_cursor(TB_CAP_HIDE_CURSOR, TB_CAP_HIDE_CURSOR);
   }
   tb_present();
 }
