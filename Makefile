@@ -36,7 +36,8 @@ termbox: OBJS += obj/ui_termbox.o
 termbox: $(OBJ_DIR) $(TERMBOX2_H) | obj/ui_termbox.o $(EXECUTABLE)
 
 $(TERMBOX2_H):
-	curl https://raw.githubusercontent.com/termbox/termbox2/refs/heads/master/termbox2.h -o $@ # MIT license
+	curl https://raw.githubusercontent.com/termbox/termbox2/ffd159c2a6106dd5eef338a6702ad15d4d4aa809/termbox2.h -o $@ # MIT license
+	echo "b667fd5d7862f953258d680b5928173344f0f17a  $@" | sha1sum -c
 
 .PHONY: all clean debug travis ncurses termbox
 
